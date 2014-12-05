@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset='UTF-8'>
+  <title>CoffeeScript API Documentation</title>
+  <script src='../../javascript/application.js'></script>
+  <script src='../../javascript/search.js'></script>
+  <link rel='stylesheet' href='../../stylesheets/application.css' type='text/css'>
+</head>
+  <body>
+    <div id='base' data-path='../../'></div>
+<div id='header'>
+  <div id='menu'>
+    <a href='../../extra/README.md.html' title='Poe.js'>
+      Poe.js
+    </a>
+    &raquo;
+    <a href='../../alphabetical_index.html' title='Index'>
+      Index
+    </a>
+    &raquo;
+    <span class='title'>Poe</span>
+    &raquo;
+    <span class='title'>TextObject</span>
+  </div>
+</div>
+    <div id='content'>
+      <h1>
+        Class:
+        Poe.TextObject
+      </h1>
+      <table class='box'>
+        <tr>
+          <td>Defined in:</td>
+          <td>coffee&#47;TextObject.coffee</td>
+        </tr>
+      </table>
+      <h2>Overview</h2>
+      <div class='docstring'>
+  <p>Poe.TextObject is the base on which all document children are made of.
+It serves as a wrapper around a DOM element, in order to get away
+from the nitty gritty details of the DOM. It is not intended
+to be instantiated, but instead extended.</p>
+</div>
+<div class='tags'>
+</div>
+      <h2>Direct Known Subclasses</h2>
+      <p class='children'>
+        <a href='../../class/Poe/Line.html'>Poe.Line</a>
+        <a href='../../class/Poe/Page.html'>Poe.Page</a>
+        <a href='../../class/Poe/Paragraph.html'>Poe.Paragraph</a>
+        <a href='../../class/Poe/Word.html'>Poe.Word</a>
+      </p>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#child-dynamic'>
+        #
+(Poe.TextObject or null)
+<b>child</b><span>(index)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the child at index. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#index-dynamic'>
+        #
+(Number)
+<b>index</b><span>()</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the index of this in its parent&#39;s children. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#insertAfter-dynamic'>
+        #
+(Poe.TextObject)
+<b>insertAfter</b><span>(textObject)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Inserts this after textObject. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#insertBefore-dynamic'>
+        #
+(Poe.TextObject)
+<b>insertBefore</b><span>(textObject)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Inserts this before textObject. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#append-dynamic'>
+        #
+(Poe.TextObject)
+<b>append</b><span>(textObject)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Appends textObject to children and adds it to the DOM. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#prepend-dynamic'>
+        #
+(Poe.TextObject)
+<b>prepend</b><span>(textObject)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Prepends textObject to children and adds it to the DOM. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#setParent-dynamic'>
+        #
+(Poe.TextObject)
+<b>setParent</b><span>(textObject)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the parent of this to textObject, however it does not add itself to the parents list of children.
+
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#remove-dynamic'>
+        #
+(void)
+<b>remove</b><span>()</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Removes this from DOM and parent&#39;s children. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#next-dynamic'>
+        #
+(Poe.TextObject or null)
+<b>next</b><span>()</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the next object in parents children and returns it 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#prev-dynamic'>
+        #
+(Poe.TextObject or null)
+<b>prev</b><span>()</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Gets the previous object in parents children and returns it 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#isEmpty-dynamic'>
+        #
+(Boolean)
+<b>isEmpty</b><span>()</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Returns whether or not the object is empty of text text node.
+
+    </span>
+  </li>
+</ul>
+      <h2>Constructor Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='constructor-dynamic'>
+      #
+(void)
+<b>constructor</b><span>()</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <div class='note'>
+    <strong>Note:</strong>
+    It is pointless to create a Poe.TextObject. It has no 
+  </div>
+  <p>Creates a new Poe.TextObject.
+DOM element. Use a extension of it instead like <a href='../../class/Poe/Word.html'>Poe.Word</a>, <a href='../../class/Poe/Line.html'>Poe.Line</a>,
+etc.</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='child-dynamic'>
+      #
+(Poe.TextObject or null)
+<b>child</b><span>(index)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Gets the child at index.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>index</span>
+      <span class='type'>
+        (
+          <tt>Number</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>the index of the child </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt>Poe.TextObject or null</tt>
+      )
+      &mdash;
+      <span class='desc'>the object if it exists </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='index-dynamic'>
+      #
+(Number)
+<b>index</b><span>()</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Gets the index of this in its parent&#39;s children.</p>
+</div>
+<div class='tags'>
+  <h3>Throws:</h3>
+  <ul class='throw'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt>Error</tt>
+      )
+      &mdash;
+      <span class='desc'>If it is not found there is a bug somewhere </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt>Number</tt>
+      )
+      &mdash;
+      <span class='desc'>the index. -1 if it has no parent </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='insertAfter-dynamic'>
+      #
+(Poe.TextObject)
+<b>insertAfter</b><span>(textObject)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Inserts this after textObject. The parent is changed
+and this is added to the parents list of children. This change
+is also reflected in the DOM.</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt><a href='../../class/Poe/TextObject.html'>Poe.TextObject</a></tt>
+      )
+      &mdash;
+      <span class='desc'>this </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='insertBefore-dynamic'>
+      #
+(Poe.TextObject)
+<b>insertBefore</b><span>(textObject)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Inserts this before textObject. The parent is changed and this is addded
+to the parents list of children. This change is reflected in the DOM.</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt><a href='../../class/Poe/TextObject.html'>Poe.TextObject</a></tt>
+      )
+      &mdash;
+      <span class='desc'>this </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='append-dynamic'>
+      #
+(Poe.TextObject)
+<b>append</b><span>(textObject)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Appends textObject to children and adds it to the DOM.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>textObject</span>
+      <span class='type'>
+        (
+          <tt><a href='../../class/Poe/TextObject.html'>Poe.TextObject</a></tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>the text object to append </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt><a href='../../class/Poe/TextObject.html'>Poe.TextObject</a></tt>
+      )
+      &mdash;
+      <span class='desc'>this </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='prepend-dynamic'>
+      #
+(Poe.TextObject)
+<b>prepend</b><span>(textObject)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Prepends textObject to children and adds it to the DOM.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>textObject</span>
+      <span class='type'>
+        (
+          <tt><a href='../../class/Poe/TextObject.html'>Poe.TextObject</a></tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>the text object to prepend </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt><a href='../../class/Poe/TextObject.html'>Poe.TextObject</a></tt>
+      )
+      &mdash;
+      <span class='desc'>this </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='setParent-dynamic'>
+      #
+(Poe.TextObject)
+<b>setParent</b><span>(textObject)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Sets the parent of this to textObject, however it does not add itself
+to the parents list of children.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>textObject</span>
+      <span class='type'>
+        (
+          <tt><a href='../../class/Poe/TextObject.html'>Poe.TextObject</a></tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>the new parent </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt><a href='../../class/Poe/TextObject.html'>Poe.TextObject</a></tt>
+      )
+      &mdash;
+      <span class='desc'>this </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='remove-dynamic'>
+      #
+(void)
+<b>remove</b><span>()</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Removes this from DOM and parent&#39;s children. Also removes all
+children.</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='next-dynamic'>
+      #
+(Poe.TextObject or null)
+<b>next</b><span>()</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Gets the next object in parents children and returns it</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt>Poe.TextObject or null</tt>
+      )
+      &mdash;
+      <span class='desc'>next object if it exists </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='prev-dynamic'>
+      #
+(Poe.TextObject or null)
+<b>prev</b><span>()</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Gets the previous object in parents children and returns it</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt>Poe.TextObject or null</tt>
+      )
+      &mdash;
+      <span class='desc'>previous object if it exists </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='isEmpty-dynamic'>
+      #
+(Boolean)
+<b>isEmpty</b><span>()</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <div class='note'>
+    <strong>Note:</strong>
+    Even though the <a href='../../class/Poe/TextCursor.html'>Poe.TextCursor</a> is not text. It does contain a 
+  </div>
+  <p>Returns whether or not the object is empty of text
+text node. This will return false if there is a <a href='../../class/Poe/TextCursor.html'>Poe.TextCursor</a> somewhere
+in it&#39;s child tree.</p>
+</div>
+<div class='tags'>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt>Boolean</tt>
+      )
+      &mdash;
+      <span class='desc'>true if empty, false otherwise </span>
+    </li>
+  </ul>
+</div>
+  </div>
+</div>
+    </div>
+    <div id='footer'>
+  December 05, 14 13:16:12 by
+  <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
+    Codo
+  </a>
+  2.0.9
+  &#10034;
+  Press H to see the keyboard shortcuts
+  &#10034;
+  <a href='http://twitter.com/netzpirat' target='_parent'>@netzpirat</a>
+  &#10034;
+  <a href='http://twitter.com/_inossidabile' target='_parent'>@_inossidabile</a>
+</div>
+<iframe id='search_frame'></iframe>
+<div id='fuzzySearch'>
+  <input type='text'>
+  <ol></ol>
+</div>
+<div id='help'>
+  <p>
+    Quickly fuzzy find classes, mixins, methods, file:
+  </p>
+  <ul>
+    <li>
+      <span>T</span>
+      Open fuzzy finder dialog
+    </li>
+  </ul>
+  <p>
+    Control the navigation frame:
+  </p>
+  <ul>
+    <li>
+      <span>L</span>
+      Toggle list view
+    </li>
+    <li>
+      <span>C</span>
+      Show class list
+    </li>
+    <li>
+      <span>I</span>
+      Show mixin list
+    </li>
+    <li>
+      <span>F</span>
+      Show file list
+    </li>
+    <li>
+      <span>M</span>
+      Show method list
+    </li>
+    <li>
+      <span>E</span>
+      Show extras list
+    </li>
+  </ul>
+  <p>
+    You can focus and blur the search input:
+  </p>
+  <ul>
+    <li>
+      <span>S</span>
+      Focus search input
+    </li>
+    <li>
+      <span>Esc</span>
+      Blur search input
+    </li>
+  </ul>
+</div>
+  </body>
+</html>

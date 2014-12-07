@@ -21,107 +21,80 @@
     &raquo;
     <span class='title'>Poe</span>
     &raquo;
-    <span class='title'>Document</span>
+    <span class='title'>Style</span>
   </div>
 </div>
     <div id='content'>
       <h1>
         Class:
-        Poe.Document
+        Poe.Style
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>coffee&#47;Document.coffee</td>
+          <td>coffee&#47;Style.coffee</td>
         </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>Poe.Document is the top and contains pages. It also manages
-page margins and page size.</p>
+  <p>Base class for all styles including TextStyle and paragraphStyle.</p>
 </div>
 <div class='tags'>
 </div>
-      <h2>Variables Summary</h2>
-      <dl class='constants'>
-  <dt id='PageSize-variable'>
-    PageSize
-    =
-  </dt>
-  <dd>
-    <pre><code class='coffeescript'>{
-  Letter: {
-    height: 1056,
-    width: 816
-  }
-}</code></pre>
-    <div class='docstring'>
-  <p>&quot;Enum&quot; of possible page sizes</p>
-</div>
-<div class='tags'>
-</div>
-  </dd>
-</dl>
+      <h2>Direct Known Subclasses</h2>
+      <p class='children'>
+        <a href='../../class/Poe/ParagraphStyle.html'>Poe.ParagraphStyle</a>
+        <a href='../../class/Poe/TextStyle.html'>Poe.TextStyle</a>
+      </p>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
   <li>
     <span class='signature'>
-      <a href='#page-dynamic'>
+      <a href='#setTextCursor-dynamic'>
         #
-(Poe.Page)
-<b>page</b><span>(index)</span>
+(Poe.Style)
+<b>setTextCursor</b><span>(textCursor)</span>
       </a>
     </span>
     <span class='desc'>
-      Gets the child page at index. 
+      Set the <a href='../../class/Poe/TextCursor.html'>Poe.TextCursor</a> that this style would use when applying a style to the TextObject that contains the cursor.
+
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#append-dynamic'>
+      <a href='#clone-dynamic'>
+        #
+(Poe.Style)
+<b>clone</b><span>(style)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Override in extended class. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#changed-dynamic'>
+        #
+(Poe.Style)
+<b>changed</b><span>(callbackFn)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Register a callback to be called when the style has changed. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#hasChanged-dynamic'>
         #
 (void)
-<b>append</b><span>(page)</span>
+<b>hasChanged</b><span>()</span>
       </a>
     </span>
     <span class='desc'>
-      Append a page to the end of the document. 
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#prepend-dynamic'>
-        #
-(Poe.Document)
-<b>prepend</b><span>(page)</span>
-      </a>
-    </span>
-    <span class='desc'>
-      Prepend a page to the front of the document. 
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#setPageSize-dynamic'>
-        #
-(Poe.Document)
-<b>setPageSize</b><span>(size)</span>
-      </a>
-    </span>
-    <span class='desc'>
-      Sets the page size to size 
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#setPageMargins-dynamic'>
-        #
-(Poe.Document)
-<b>setPageMargins</b><span>(margins)</span>
-      </a>
-    </span>
-    <span class='desc'>
-      Sets the page margins for all pages. 
+      Convenience function to call all registered changed callbacks. 
     </span>
   </li>
 </ul>
@@ -131,41 +104,62 @@ page margins and page size.</p>
     <p class='signature' id='constructor-dynamic'>
       #
 (void)
-<b>constructor</b><span>()</span>
+<b>constructor</b><span>(textCursor)</span>
       <br>
     </p>
     <div class='docstring'>
-  <p>Create a new Poe.Document. Creating a document is only possible in <a href='../../class/Poe/Writer.html'>Poe.Writer</a>
-in order for it to be shown in the DOM.</p>
+  <p>Creates a new Poe.Style. This is not meant to instantiated, however is
+meant to be extended</p>
 </div>
 <div class='tags'>
+  <h3>See also:</h3>
+  <ul class='see'>
+    <li>
+      <a href='../../class/Poe/TextStyle.html'>Poe.TextStyle</a>
+    </li>
+    <li>
+      <a href='../../class/Poe/ParagraphStyle.html'>Poe.ParagraphStyle</a>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='page-dynamic'>
+    <p class='signature' id='setTextCursor-dynamic'>
       #
-(Poe.Page)
-<b>page</b><span>(index)</span>
+(Poe.Style)
+<b>setTextCursor</b><span>(textCursor)</span>
       <br>
     </p>
     <div class='docstring'>
-  <p>Gets the child page at index.</p>
+  <p>Set the <a href='../../class/Poe/TextCursor.html'>Poe.TextCursor</a> that this style would use
+when applying a style to the TextObject that contains the cursor.</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>index</span>
+      <span class='name'>textCursor</span>
       <span class='type'>
         (
-          <tt>Number</tt>
+          <tt><a href='../../class/Poe/TextCursor.html'>Poe.TextCursor</a></tt>
         )
       </span>
       &mdash;
-      <span class='desc'>index to retrieve </span>
+      <span class='desc'>textCursor </span>
+    </li>
+  </ul>
+  <h3>Throws:</h3>
+  <ul class='throw'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt>Error</tt>
+      )
+      &mdash;
+      <span class='desc'>error if textCursor is not a <a href='../../class/Poe/TextCursor.html'>Poe.TextCursor</a> </span>
     </li>
   </ul>
   <h3>Returns:</h3>
@@ -173,175 +167,101 @@ in order for it to be shown in the DOM.</p>
     <li>
       <span class='type'></span>
       (
-        <tt><a href='../../class/Poe/Page.html'>Poe.Page</a></tt>
+        <tt><a href='../../class/Poe/Style.html'>Poe.Style</a></tt>
       )
       &mdash;
-      <span class='desc'>if the page exists </span>
+      <span class='desc'>this </span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='append-dynamic'>
+    <p class='signature' id='clone-dynamic'>
+      #
+(Poe.Style)
+<b>clone</b><span>(style)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Override in extended class. Should copy
+the different parts of style to this</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>style</span>
+      <span class='type'>
+        (
+          <tt><a href='../../class/Poe/Style.html'>Poe.Style</a></tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>the style to clone </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt><a href='../../class/Poe/Style.html'>Poe.Style</a></tt>
+      )
+      &mdash;
+      <span class='desc'>this </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='changed-dynamic'>
+      #
+(Poe.Style)
+<b>changed</b><span>(callbackFn)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Register a callback to be called when the style has changed.
+@throws [Error] error if callbackFn is not a function</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>callbackFn</span>
+      <span class='type'>
+        (
+          <tt>Function</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>a function that takes one argument which will be <a href='../../class/Poe/Style.html'>Poe.Style</a> </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt><a href='../../class/Poe/Style.html'>Poe.Style</a></tt>
+      )
+      &mdash;
+      <span class='desc'>this </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='hasChanged-dynamic'>
       #
 (void)
-<b>append</b><span>(page)</span>
+<b>hasChanged</b><span>()</span>
       <br>
     </p>
     <div class='docstring'>
-  <p>Append a page to the end of the document.</p>
+  <p>Convenience function to call all registered changed callbacks.</p>
 </div>
 <div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>page</span>
-      <span class='type'>
-        (
-          <tt><a href='../../class/Poe/Page.html'>Poe.Page</a></tt>
-        )
-      </span>
-      &mdash;
-      <span class='desc'>the page to append </span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='prepend-dynamic'>
-      #
-(Poe.Document)
-<b>prepend</b><span>(page)</span>
-      <br>
-    </p>
-    <div class='docstring'>
-  <p>Prepend a page to the front of the document.</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>page</span>
-      <span class='type'>
-        (
-          <tt><a href='../../class/Poe/Page.html'>Poe.Page</a></tt>
-        )
-      </span>
-      &mdash;
-      <span class='desc'>the page to prepend </span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (
-        <tt><a href='../../class/Poe/Document.html'>Poe.Document</a></tt>
-      )
-      &mdash;
-      <span class='desc'>this </span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='setPageSize-dynamic'>
-      #
-(Poe.Document)
-<b>setPageSize</b><span>(size)</span>
-      <br>
-    </p>
-    <div class='docstring'>
-  <p>Sets the page size to size</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>size</span>
-      <span class='type'>
-        (
-          <tt>Object</tt>
-        )
-      </span>
-      &mdash;
-      <span class='desc'>the size object </span>
-    </li>
-  </ul>
-  <h3>
-    Options Hash:
-    (size):
-  </h3>
-  <ul class='options'>
-    <li>
-      <span class='name'>width</span>
-      <span class='type'>
-        (
-          <tt>Number</tt>
-        )
-      </span>
-      &mdash;
-      <span class='desc'>the width in pixels </span>
-    </li>
-    <li>
-      <span class='name'>height</span>
-      <span class='type'>
-        (
-          <tt>Number</tt>
-        )
-      </span>
-      &mdash;
-      <span class='desc'>the height in pixels </span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (
-        <tt><a href='../../class/Poe/Document.html'>Poe.Document</a></tt>
-      )
-      &mdash;
-      <span class='desc'>this </span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='setPageMargins-dynamic'>
-      #
-(Poe.Document)
-<b>setPageMargins</b><span>(margins)</span>
-      <br>
-    </p>
-    <div class='docstring'>
-  <p>Sets the page margins for all pages.</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>margins</span>
-      <span class='type'>
-        (
-          <tt><a href='../../class/Poe/Document.html#PageSize-variable'>Poe.Document.PageSize</a></tt>
-        )
-      </span>
-      &mdash;
-      <span class='desc'>the size </span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (
-        <tt><a href='../../class/Poe/Document.html'>Poe.Document</a></tt>
-      )
-      &mdash;
-      <span class='desc'>this </span>
-    </li>
-  </ul>
 </div>
   </div>
 </div>

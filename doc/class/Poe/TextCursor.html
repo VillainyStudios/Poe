@@ -175,6 +175,33 @@ like it is the cursor.</p>
   </li>
   <li>
     <span class='signature'>
+      <a href='#paragraphStyleChanged-dynamic'>
+        #
+(void)
+<b>paragraphStyleChanged</b><span>(style)</span>
+      </a>
+    </span>
+    <span class='bound note title'>Bound</span>
+    <span class='desc'>
+      Callback registered with <a href='../../class/Poe/ParagraphStyle.html'>Poe.ParagraphStyle</a> that will update the whole paragraph&#39;s alignment.
+
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#moveInside-dynamic'>
+        #
+(Poe.TextCursor)
+<b>moveInside</b><span>(word)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Moves the cursor inside and at the front of word @throws [Error] if the word is not a Poe.Word
+
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
       <a href='#show-dynamic'>
         #
 (Poe.TextCursor)
@@ -477,8 +504,9 @@ the return value.</p>
       <br>
     </p>
     <div class='docstring'>
-  <p>Fixes word wrap. Loops through all lines of the currentParagraph() and checks
-to see if the last word in that line is outside of the editable area. If the word is
+  <p>Fixes word wrap. Starts off by calling <a href='../../class/Poe/TextCursor.html#paragraphStyleChanged-dynamic'>Poe.TextCursor#paragraphStyleChanged</a> then
+loops through all lines of the currentParagraph() and checks to see if the
+last word in that line is outside of the editable area. If the word is
 outside it gets moved down to the next line. If no line exists a line is created
 after it.</p>
 </div>
@@ -511,6 +539,59 @@ neccessary to translate the keydown onto the screen. Lastly it makes the cursor
 continue blinking.</p>
 </div>
 <div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='paragraphStyleChanged-dynamic'>
+      #
+(void)
+<b>paragraphStyleChanged</b><span>(style)</span>
+      <span class='bound note'>Bound</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Callback registered with <a href='../../class/Poe/ParagraphStyle.html'>Poe.ParagraphStyle</a> that will update the whole
+paragraph&#39;s alignment.</p>
+</div>
+<div class='tags'>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='moveInside-dynamic'>
+      #
+(Poe.TextCursor)
+<b>moveInside</b><span>(word)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Moves the cursor inside and at the front of word
+@throws [Error] if the word is not a Poe.Word</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>word</span>
+      <span class='type'>
+        (
+          <tt><a href='../../class/Poe/Word.html'>Poe.Word</a></tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>the word to move it inside </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt><a href='../../class/Poe/TextCursor.html'>Poe.TextCursor</a></tt>
+      )
+      &mdash;
+      <span class='desc'>this </span>
+    </li>
+  </ul>
 </div>
   </div>
   <div class='method_details'>
@@ -580,7 +661,7 @@ it is not already.</p>
 </div>
     </div>
     <div id='footer'>
-  December 07, 14 09:49:41 by
+  December 07, 14 10:52:25 by
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>

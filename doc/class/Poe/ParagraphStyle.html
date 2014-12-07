@@ -21,42 +21,48 @@
     &raquo;
     <span class='title'>Poe</span>
     &raquo;
-    <span class='title'>Document</span>
+    <span class='title'>ParagraphStyle</span>
   </div>
 </div>
     <div id='content'>
       <h1>
         Class:
-        Poe.Document
+        Poe.ParagraphStyle
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>coffee&#47;Document.coffee</td>
+          <td>coffee&#47;ParagraphStyle.coffee</td>
+        </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../class/Poe/Style.html'>Poe.Style</a>
+          </td>
         </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>Poe.Document is the top and contains pages. It also manages
-page margins and page size.</p>
+  <p>Poe.ParagraphStyle handles any kind of style that should
+be applied to a Poe.paragraph.</p>
 </div>
 <div class='tags'>
 </div>
       <h2>Variables Summary</h2>
       <dl class='constants'>
-  <dt id='PageSize-variable'>
-    PageSize
+  <dt id='Align-variable'>
+    Align
     =
   </dt>
   <dd>
     <pre><code class='coffeescript'>{
-  Letter: {
-    height: 1056,
-    width: 816
-  }
+  Left: &#39;left&#39;,
+  Center: &#39;center&#39;,
+  Right: &#39;right&#39;,
+  Justify: &#39;justify&#39;
 }</code></pre>
     <div class='docstring'>
-  <p>&quot;Enum&quot; of possible page sizes</p>
+  <p>&quot;Enum&quot; of paragraph alignments</p>
 </div>
 <div class='tags'>
 </div>
@@ -66,106 +72,118 @@ page margins and page size.</p>
       <ul class='summary'>
   <li>
     <span class='signature'>
-      <a href='#page-dynamic'>
+      <a href='#clone-dynamic'>
         #
-(Poe.Page)
-<b>page</b><span>(index)</span>
+(Poe.ParagraphStyle)
+<b>clone</b><span>(style)</span>
       </a>
     </span>
     <span class='desc'>
-      Gets the child page at index. 
+      Makes this style the same as style 
     </span>
   </li>
   <li>
     <span class='signature'>
-      <a href='#append-dynamic'>
+      <a href='#apply-dynamic'>
+        #
+(Poe.ParagraphStyle)
+<b>apply</b><span>(paragraph)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Apply style to paragraph. 
+    </span>
+  </li>
+  <li>
+    <span class='signature'>
+      <a href='#update-dynamic'>
         #
 (void)
-<b>append</b><span>(page)</span>
+<b>update</b><span>(paragraph)</span>
       </a>
     </span>
     <span class='desc'>
-      Append a page to the end of the document. 
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#prepend-dynamic'>
-        #
-(Poe.Document)
-<b>prepend</b><span>(page)</span>
-      </a>
-    </span>
-    <span class='desc'>
-      Prepend a page to the front of the document. 
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#setPageSize-dynamic'>
-        #
-(Poe.Document)
-<b>setPageSize</b><span>(size)</span>
-      </a>
-    </span>
-    <span class='desc'>
-      Sets the page size to size 
-    </span>
-  </li>
-  <li>
-    <span class='signature'>
-      <a href='#setPageMargins-dynamic'>
-        #
-(Poe.Document)
-<b>setPageMargins</b><span>(margins)</span>
-      </a>
-    </span>
-    <span class='desc'>
-      Sets the page margins for all pages. 
+      Update this style with the style of paragraph. 
     </span>
   </li>
 </ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+        <h3 class='inherited'>
+          Methods inherited from
+          <a href='../../class/Poe/Style.html'>Poe.Style</a>
+        </h3>
+        <p class='inherited'>
+          <a href='../../class/Poe/Style.html#setTextCursor-dynamic'>#setTextCursor</a>
+          <a href='../../class/Poe/Style.html#clone-dynamic'>#clone</a>
+          <a href='../../class/Poe/Style.html#changed-dynamic'>#changed</a>
+          <a href='../../class/Poe/Style.html#hasChanged-dynamic'>#hasChanged</a>
+        </p>
+      </h2>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
     <p class='signature' id='constructor-dynamic'>
       #
 (void)
-<b>constructor</b><span>()</span>
+<b>constructor</b><span>(textCursor)</span>
       <br>
     </p>
     <div class='docstring'>
-  <p>Create a new Poe.Document. Creating a document is only possible in <a href='../../class/Poe/Writer.html'>Poe.Writer</a>
-in order for it to be shown in the DOM.</p>
+  <p>Creates a new Poe.ParagraphStyle</p>
 </div>
 <div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>textCursor</span>
+      <span class='type'>
+        (
+          <tt><a href='../../class/Poe/TextCursor.html'>Poe.TextCursor</a></tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>the cursor that this style will operate on </span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>
       <h2>Instance Method Details</h2>
       <div class='methods'>
   <div class='method_details'>
-    <p class='signature' id='page-dynamic'>
+    <p class='signature' id='clone-dynamic'>
       #
-(Poe.Page)
-<b>page</b><span>(index)</span>
+(Poe.ParagraphStyle)
+<b>clone</b><span>(style)</span>
       <br>
     </p>
     <div class='docstring'>
-  <p>Gets the child page at index.</p>
+  <p>Makes this style the same as style</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>index</span>
+      <span class='name'>style</span>
       <span class='type'>
         (
-          <tt>Number</tt>
+          <tt><a href='../../class/Poe/ParagraphStyle.html'>Poe.ParagraphStyle</a></tt>
         )
       </span>
       &mdash;
-      <span class='desc'>index to retrieve </span>
+      <span class='desc'>the style to clonse </span>
+    </li>
+  </ul>
+  <h3>Throws:</h3>
+  <ul class='throw'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt>Error</tt>
+      )
+      &mdash;
+      <span class='desc'>Error if style is not a Poe.ParagraphStyle </span>
     </li>
   </ul>
   <h3>Returns:</h3>
@@ -173,173 +191,85 @@ in order for it to be shown in the DOM.</p>
     <li>
       <span class='type'></span>
       (
-        <tt><a href='../../class/Poe/Page.html'>Poe.Page</a></tt>
+        <tt><a href='../../class/Poe/ParagraphStyle.html'>Poe.ParagraphStyle</a></tt>
       )
       &mdash;
-      <span class='desc'>if the page exists </span>
+      <span class='desc'>this </span>
     </li>
   </ul>
 </div>
   </div>
   <div class='method_details'>
-    <p class='signature' id='append-dynamic'>
+    <p class='signature' id='apply-dynamic'>
+      #
+(Poe.ParagraphStyle)
+<b>apply</b><span>(paragraph)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Apply style to paragraph.
+@throws [Error] if paragraph is not a Poe.Paragraph</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>paragraph</span>
+      <span class='type'>
+        (
+          <tt>Poe.paragraph</tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>Optional. Defaults to textCursor.currentparagraph. </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt><a href='../../class/Poe/ParagraphStyle.html'>Poe.ParagraphStyle</a></tt>
+      )
+      &mdash;
+      <span class='desc'>this </span>
+    </li>
+  </ul>
+</div>
+  </div>
+  <div class='method_details'>
+    <p class='signature' id='update-dynamic'>
       #
 (void)
-<b>append</b><span>(page)</span>
+<b>update</b><span>(paragraph)</span>
       <br>
     </p>
     <div class='docstring'>
-  <p>Append a page to the end of the document.</p>
+  <p>Update this style with the style of paragraph. If paragraph is not
+specified it default to the textCursor&#39;s current paragraph if it has
+a textCursor</p>
 </div>
 <div class='tags'>
   <h3>Parameters:</h3>
   <ul class='param'>
     <li>
-      <span class='name'>page</span>
+      <span class='name'>paragraph</span>
       <span class='type'>
         (
-          <tt><a href='../../class/Poe/Page.html'>Poe.Page</a></tt>
+          <tt><a href='../../class/Poe/Paragraph.html'>Poe.Paragraph</a></tt>
         )
       </span>
       &mdash;
-      <span class='desc'>the page to append </span>
+      <span class='desc'>the paragraph </span>
     </li>
   </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='prepend-dynamic'>
-      #
-(Poe.Document)
-<b>prepend</b><span>(page)</span>
-      <br>
-    </p>
-    <div class='docstring'>
-  <p>Prepend a page to the front of the document.</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
+  <h3>See also:</h3>
+  <ul class='see'>
     <li>
-      <span class='name'>page</span>
-      <span class='type'>
-        (
-          <tt><a href='../../class/Poe/Page.html'>Poe.Page</a></tt>
-        )
-      </span>
-      &mdash;
-      <span class='desc'>the page to prepend </span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (
-        <tt><a href='../../class/Poe/Document.html'>Poe.Document</a></tt>
-      )
-      &mdash;
-      <span class='desc'>this </span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='setPageSize-dynamic'>
-      #
-(Poe.Document)
-<b>setPageSize</b><span>(size)</span>
-      <br>
-    </p>
-    <div class='docstring'>
-  <p>Sets the page size to size</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>size</span>
-      <span class='type'>
-        (
-          <tt>Object</tt>
-        )
-      </span>
-      &mdash;
-      <span class='desc'>the size object </span>
-    </li>
-  </ul>
-  <h3>
-    Options Hash:
-    (size):
-  </h3>
-  <ul class='options'>
-    <li>
-      <span class='name'>width</span>
-      <span class='type'>
-        (
-          <tt>Number</tt>
-        )
-      </span>
-      &mdash;
-      <span class='desc'>the width in pixels </span>
+      <a href='../../class/Poe/Style.html#setTextCursor-dynamic'>Poe.Style#setTextCursor</a>
     </li>
     <li>
-      <span class='name'>height</span>
-      <span class='type'>
-        (
-          <tt>Number</tt>
-        )
-      </span>
-      &mdash;
-      <span class='desc'>the height in pixels </span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (
-        <tt><a href='../../class/Poe/Document.html'>Poe.Document</a></tt>
-      )
-      &mdash;
-      <span class='desc'>this </span>
-    </li>
-  </ul>
-</div>
-  </div>
-  <div class='method_details'>
-    <p class='signature' id='setPageMargins-dynamic'>
-      #
-(Poe.Document)
-<b>setPageMargins</b><span>(margins)</span>
-      <br>
-    </p>
-    <div class='docstring'>
-  <p>Sets the page margins for all pages.</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>margins</span>
-      <span class='type'>
-        (
-          <tt><a href='../../class/Poe/Document.html#PageSize-variable'>Poe.Document.PageSize</a></tt>
-        )
-      </span>
-      &mdash;
-      <span class='desc'>the size </span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (
-        <tt><a href='../../class/Poe/Document.html'>Poe.Document</a></tt>
-      )
-      &mdash;
-      <span class='desc'>this </span>
+      <a href='../../class/Poe/ParagraphStyle.html#constructor-dynamic'>Poe.ParagraphStyle#constructor</a>
     </li>
   </ul>
 </div>

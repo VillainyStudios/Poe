@@ -34,6 +34,12 @@
           <td>Defined in:</td>
           <td>coffee&#47;TextStyle.coffee</td>
         </tr>
+        <tr>
+          <td>Inherits:</td>
+          <td>
+            <a href='../../class/Poe/Style.html'>Poe.Style</a>
+          </td>
+        </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
@@ -48,18 +54,6 @@ the constructor or use setTextCursor().</p>
 </div>
       <h2>Instance Method Summary</h2>
       <ul class='summary'>
-  <li>
-    <span class='signature'>
-      <a href='#setTextCursor-dynamic'>
-        #
-(Poe.TextStyle)
-<b>setTextCursor</b><span>(textCursor)</span>
-      </a>
-    </span>
-    <span class='desc'>
-      Set the Poe.TextCursor used by applyChar 
-    </span>
-  </li>
   <li>
     <span class='signature'>
       <a href='#clone-dynamic'>
@@ -120,19 +114,20 @@ the constructor or use setTextCursor().</p>
       Makes this style match the style that word has. 
     </span>
   </li>
-  <li>
-    <span class='signature'>
-      <a href='#changed-dynamic'>
-        #
-(Poe.TextStyle)
-<b>changed</b><span>(callbackFn)</span>
-      </a>
-    </span>
-    <span class='desc'>
-      Register a callback to be called when the style changes 
-    </span>
-  </li>
 </ul>
+      <h2>
+        <small>Inherited Method Summary</small>
+        <h3 class='inherited'>
+          Methods inherited from
+          <a href='../../class/Poe/Style.html'>Poe.Style</a>
+        </h3>
+        <p class='inherited'>
+          <a href='../../class/Poe/Style.html#setTextCursor-dynamic'>#setTextCursor</a>
+          <a href='../../class/Poe/Style.html#clone-dynamic'>#clone</a>
+          <a href='../../class/Poe/Style.html#changed-dynamic'>#changed</a>
+          <a href='../../class/Poe/Style.html#hasChanged-dynamic'>#hasChanged</a>
+        </p>
+      </h2>
       <h2>Constructor Details</h2>
       <div class='methods'>
   <div class='method_details'>
@@ -169,54 +164,6 @@ TextStyle is used to apply formatting to a Poe.Word.</p><p>to apply change the s
 </div>
       <h2>Instance Method Details</h2>
       <div class='methods'>
-  <div class='method_details'>
-    <p class='signature' id='setTextCursor-dynamic'>
-      #
-(Poe.TextStyle)
-<b>setTextCursor</b><span>(textCursor)</span>
-      <br>
-    </p>
-    <div class='docstring'>
-  <p>Set the Poe.TextCursor used by applyChar</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>textCursor</span>
-      <span class='type'>
-        (
-          <tt><a href='../../class/Poe/TextCursor.html'>Poe.TextCursor</a></tt>
-        )
-      </span>
-      &mdash;
-      <span class='desc'>the cursor </span>
-    </li>
-  </ul>
-  <h3>Throws:</h3>
-  <ul class='throw'>
-    <li>
-      <span class='type'></span>
-      (
-        <tt>?</tt>
-      )
-      &mdash;
-      <span class='desc'>textCursor must be a Poe.TextCursor </span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (
-        <tt><a href='../../class/Poe/TextStyle.html'>Poe.TextStyle</a></tt>
-      )
-      &mdash;
-      <span class='desc'>this </span>
-    </li>
-  </ul>
-</div>
-  </div>
   <div class='method_details'>
     <p class='signature' id='clone-dynamic'>
       #
@@ -404,47 +351,10 @@ This also calls any callbacks registered with changed.</p>
   </ul>
 </div>
   </div>
-  <div class='method_details'>
-    <p class='signature' id='changed-dynamic'>
-      #
-(Poe.TextStyle)
-<b>changed</b><span>(callbackFn)</span>
-      <br>
-    </p>
-    <div class='docstring'>
-  <p>Register a callback to be called when the style changes</p>
-</div>
-<div class='tags'>
-  <h3>Parameters:</h3>
-  <ul class='param'>
-    <li>
-      <span class='name'>callbackFn</span>
-      <span class='type'>
-        (
-          <tt>Function</tt>
-        )
-      </span>
-      &mdash;
-      <span class='desc'>a function that takes one argument of type Poe.TextStyle </span>
-    </li>
-  </ul>
-  <h3>Returns:</h3>
-  <ul class='return'>
-    <li>
-      <span class='type'></span>
-      (
-        <tt><a href='../../class/Poe/TextStyle.html'>Poe.TextStyle</a></tt>
-      )
-      &mdash;
-      <span class='desc'>this </span>
-    </li>
-  </ul>
-</div>
-  </div>
 </div>
     </div>
     <div id='footer'>
-  December 07, 14 09:49:41 by
+  December 07, 14 10:52:25 by
   <a href='https://github.com/coffeedoc/codo' title='CoffeeScript API documentation generator'>
     Codo
   </a>

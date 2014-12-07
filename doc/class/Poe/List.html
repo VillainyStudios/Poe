@@ -21,38 +21,72 @@
     &raquo;
     <span class='title'>Poe</span>
     &raquo;
-    <span class='title'>Page</span>
+    <span class='title'>List</span>
   </div>
 </div>
     <div id='content'>
       <h1>
         Class:
-        Poe.Page
+        Poe.List
       </h1>
       <table class='box'>
         <tr>
           <td>Defined in:</td>
-          <td>coffee&#47;Page.coffee</td>
+          <td>coffee&#47;List.coffee</td>
         </tr>
         <tr>
           <td>Inherits:</td>
           <td>
-            <a href='../../class/Poe/TextObject.html'>Poe.TextObject</a>
+            <a href='../../class/Poe/Paragraph.html'>Poe.Paragraph</a>
           </td>
         </tr>
       </table>
       <h2>Overview</h2>
       <div class='docstring'>
-  <p>Poe.Page is just a container to hold paragraphs. Or any other
-similar object.</p>
+  <p>Poe.List is a Poe.Paragraph subclass for bulleted or numbered lists.
+Instead of a <a href='../../class/Poe/Line.html'>Poe.Line</a>, it takes a <a href='../../class/Poe/ListItem.html'>Poe.ListItem</a> as a child. However note
+that a <a href='../../class/Poe/Line.html'>Poe.Line</a> could be added as a child if no bullet or number is wanted.</p>
 </div>
 <div class='tags'>
 </div>
+      <h2>Variables Summary</h2>
+      <dl class='constants'>
+  <dt id='ListType-variable'>
+    ListType
+    =
+  </dt>
+  <dd>
+    <pre><code class='coffeescript'>{
+  Bullets: &#39;disc&#39;,
+  Numbers: &#39;decimal&#39;
+}</code></pre>
+    <div class='docstring'>
+  <p>Bullet types for use with <a href='../../class/Poe/List.html#setListType-dynamic'>Poe.List#setListType</a></p>
+</div>
+<div class='tags'>
+</div>
+  </dd>
+</dl>
+      <h2>Instance Method Summary</h2>
+      <ul class='summary'>
+  <li>
+    <span class='signature'>
+      <a href='#setListType-dynamic'>
+        #
+(Poe.List)
+<b>setListType</b><span>(type = Poe.List.ListType.Bullets)</span>
+      </a>
+    </span>
+    <span class='desc'>
+      Sets the list bullet type. 
+    </span>
+  </li>
+</ul>
       <h2>
         <small>Inherited Method Summary</small>
         <h3 class='inherited'>
           Methods inherited from
-          <a href='../../class/Poe/TextObject.html'>Poe.TextObject</a>
+          <a href='../../class/Poe/Paragraph.html'>Poe.Paragraph</a>
         </h3>
         <p class='inherited'>
           <a href='../../class/Poe/TextObject.html#child-dynamic'>#child</a>
@@ -74,13 +108,53 @@ similar object.</p>
     <p class='signature' id='constructor-dynamic'>
       #
 (void)
-<b>constructor</b><span>(document)</span>
+<b>constructor</b><span>()</span>
       <br>
     </p>
     <div class='docstring'>
-  <p>Create a new Poe.Page. This also creates a new <a href='../../class/Poe/Paragraph.html'>Poe.Paragraph</a> as a child.</p>
+  <p>Creates a new Poe.List</p>
 </div>
 <div class='tags'>
+</div>
+  </div>
+</div>
+      <h2>Instance Method Details</h2>
+      <div class='methods'>
+  <div class='method_details'>
+    <p class='signature' id='setListType-dynamic'>
+      #
+(Poe.List)
+<b>setListType</b><span>(type = Poe.List.ListType.Bullets)</span>
+      <br>
+    </p>
+    <div class='docstring'>
+  <p>Sets the list bullet type.</p>
+</div>
+<div class='tags'>
+  <h3>Parameters:</h3>
+  <ul class='param'>
+    <li>
+      <span class='name'>type</span>
+      <span class='type'>
+        (
+          <tt><a href='../../class/Poe/List.html#ListType-variable'>Poe.List.ListType</a></tt>
+        )
+      </span>
+      &mdash;
+      <span class='desc'>the bullet type </span>
+    </li>
+  </ul>
+  <h3>Returns:</h3>
+  <ul class='return'>
+    <li>
+      <span class='type'></span>
+      (
+        <tt><a href='../../class/Poe/List.html'>Poe.List</a></tt>
+      )
+      &mdash;
+      <span class='desc'>this </span>
+    </li>
+  </ul>
 </div>
   </div>
 </div>

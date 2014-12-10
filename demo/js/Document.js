@@ -17,8 +17,6 @@ page margins and page size.
       this.children = [];
       this.element = $('<div class="document"></div>');
       $('body').append(this.element);
-      this.append(new Poe.Page());
-      this.textCursor = new Poe.TextCursor(this.children[0].child(0).child(0).child(0));
       this.setPageSize(Poe.Document.PageSize.Letter);
       this.setPageMargins(margins = {
         top: 96,
@@ -26,6 +24,9 @@ page margins and page size.
         left: 96,
         right: 96
       });
+      this.pdf = new Poe.PDF(this);
+      this.append(new Poe.Page());
+      this.textCursor = new Poe.TextCursor(this.children[0].child(0).child(0).child(0));
     }
 
 
@@ -54,6 +55,8 @@ page margins and page size.
       this.children.append(page);
       this.element.append(page.element);
       page.setParent(this);
+      this.setPageMargins(this.margins);
+      this.setPageSize(this.pageSize);
       return this;
     };
 
@@ -69,6 +72,8 @@ page margins and page size.
       this.children.prepend(page);
       this.element.prepend(page.element);
       page.setParent(this);
+      this.setPageMargins(this.margins);
+      this.setPageSize(this.pageSize);
       return this;
     };
 
@@ -86,9 +91,10 @@ page margins and page size.
       _ref = this.children;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         page = _ref[_i];
-        page.element.height(size.height);
-        page.element.width(size.width);
+        page.element.css('height', "" + size.height);
+        page.element.css('width', "" + size.width);
       }
+      this.pageSize = size;
       return this;
     };
 
@@ -109,7 +115,24 @@ page margins and page size.
         page.element.css('padding-top', margins.top);
         page.element.css('padding-bottom', margins.bottom);
       }
+      this.margins = margins;
       return this;
+    };
+
+    Document.prototype.objectFromElement = function(element) {
+      var page, ret, _i, _len, _ref;
+      _ref = this.children;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        page = _ref[_i];
+        if (page.element[0] === element[0]) {
+          return page;
+        }
+        ret = page.fromElement(element);
+        if (ret !== null) {
+          return ret;
+        }
+      }
+      return null;
     };
 
 

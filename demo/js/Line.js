@@ -20,7 +20,7 @@ It normally contains children of type Poe.Word.
 
     function Line() {
       this.children = [];
-      this.element = $('<div class="line"></div>');
+      this.element = $('<div class="line" style=""></div>');
       this.parent = null;
       $('body').append(this.element);
       this.append(new Poe.Word());
@@ -36,11 +36,18 @@ It normally contains children of type Poe.Word.
      */
 
     Line.prototype.visiblyContains = function(child) {
-      var childPos, pos;
-      childPos = child.element.position();
+      var childPos, pos, range;
+      childPos = child.position();
       pos = this.element.position();
-      childPos.right = childPos.left + child.element.width();
+      childPos.right = childPos.left + child.width();
       pos.right = pos.left + this.element.outerWidth(false);
+      if (child instanceof Poe.Word) {
+        if (child.children().length > 0 && child.children().last()[0].textContent === ' ') {
+          range = document.createRange();
+          range.selectNode(child.children().last()[0]);
+          childPos.right -= range.getClientRects()[0].width;
+        }
+      }
       if (childPos.right > pos.right) {
         return false;
       }

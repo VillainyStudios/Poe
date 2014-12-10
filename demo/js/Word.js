@@ -71,6 +71,23 @@ and that is not always the case.
       return ret;
     };
 
+    Word.prototype.child = function(index) {
+      if (index >= 0 && index < this.element[0].childNodes.length) {
+        return $(this.element[0].childNodes[index]);
+      }
+      return null;
+    };
+
+    Word.prototype.isEmpty = function() {
+      if (this.children().length === 0) {
+        return true;
+      }
+      if (this.children().length === 1 && !this.child(0).hasClass('textcursor') && this.child(0)[0].textContent.charCodeAt(0) === 8203) {
+        return true;
+      }
+      return false;
+    };
+
     return Word;
 
   })(Poe.TextObject);

@@ -158,6 +158,28 @@ to be instantiated, but instead extended.
       return this.parent.children.remove(this);
     };
 
+    TextObject.prototype.fromElement = function(element) {
+      var child, ret, _i, _j, _len, _len1, _ref, _ref1;
+      _ref = this.children;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        child = _ref[_i];
+        if (child.element[0] === element[0]) {
+          return child;
+        }
+      }
+      if (this.children) {
+        _ref1 = this.children;
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          child = _ref1[_j];
+          ret = child.fromElement(element);
+          if (ret !== null) {
+            return ret;
+          }
+        }
+      }
+      return null;
+    };
+
 
     /*
     Gets the next object in parents children and returns it
@@ -165,7 +187,16 @@ to be instantiated, but instead extended.
      */
 
     TextObject.prototype.next = function() {
-      return this.parent.children.next(this);
+      var next, _ref;
+      next = this.parent.children.next(this);
+      if (!next && this.parent instanceof Poe.TextObject) {
+        next = (_ref = this.parent.next()) != null ? _ref.children.first() : void 0;
+      }
+      if (next) {
+        return next;
+      } else {
+        return null;
+      }
     };
 
 
@@ -175,6 +206,23 @@ to be instantiated, but instead extended.
      */
 
     TextObject.prototype.prev = function() {
+      var prev, _ref;
+      prev = this.parent.children.prev(this);
+      if (!prev && this.parent instanceof Poe.TextObject) {
+        prev = (_ref = this.parent.prev()) != null ? _ref.children.last() : void 0;
+      }
+      if (prev) {
+        return prev;
+      } else {
+        return null;
+      }
+    };
+
+    TextObject.prototype.nextSibling = function() {
+      return this.parent.children.next(this);
+    };
+
+    TextObject.prototype.prevSibling = function() {
       return this.parent.children.prev(this);
     };
 
@@ -192,6 +240,18 @@ to be instantiated, but instead extended.
         return true;
       }
       return false;
+    };
+
+    TextObject.prototype.position = function() {
+      return this.element.position();
+    };
+
+    TextObject.prototype.height = function() {
+      return this.element.height();
+    };
+
+    TextObject.prototype.width = function() {
+      return this.element.width();
     };
 
     return TextObject;

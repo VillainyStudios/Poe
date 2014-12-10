@@ -85,7 +85,6 @@ the constructor or use setTextCursor().
         lastWord.prepend(this.textCursor.element);
         middleWord = new Poe.Word();
         middleWord.insertAfter(word);
-        otherStyle = null;
         element = middleWord.element;
         element.prepend(this.textCursor.element);
         this.textCursor.currentWord = middleWord;
@@ -118,7 +117,7 @@ the constructor or use setTextCursor().
         return element.css(style, value);
       };
       apply('font-family', '"' + this.font + '"');
-      size = (this.fontSize * 96) / 72;
+      size = this.fontSize / .75;
       apply('font-size', "" + size + "px");
       apply('color', this.color);
       apply('background-color', this.background);
@@ -177,6 +176,9 @@ the constructor or use setTextCursor().
     TextStyle.prototype.update = function(word) {
       var element;
       element = word.element;
+      if (!word) {
+        element = this.textCursor.currentWord;
+      }
       if (!word || !element) {
         return;
       }
@@ -197,8 +199,8 @@ the constructor or use setTextCursor().
       }
       this.font = element.css('font-family').split('"')[0];
       this.font = this.font.replace("'", '').replace("'", '');
-      this.fontSize = Math.floor((parseInt(element.css('font-size')) * 72) / 96);
-      this.color = element.css('color');
+      this.fontSize = parseInt(element.css('font-size')) * .75;
+      this.color = Poe.Style.rgbToHex(element.css('color'));
       this.background = element.css('background-color');
       if (this.textCursor) {
         this.textCursor.visibleCursor.css('height', "" + this.fontSize + "pt");

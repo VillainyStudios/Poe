@@ -23,7 +23,10 @@ like it is the cursor.
      */
     function TextCursor(inside) {
       this.blink = __bind(this.blink, this);
+      this.hide = __bind(this.hide, this);
+      this.show = __bind(this.show, this);
       this.paragraphStyleChanged = __bind(this.paragraphStyleChanged, this);
+      this.handleClick = __bind(this.handleClick, this);
       this.keyEvent = __bind(this.keyEvent, this);
       if (!inside) {
         throw new Error('Poe.TextCursor constructor expects one argument of type Poe.Word');
@@ -34,14 +37,16 @@ like it is the cursor.
       this.blinkTimer = null;
       inside.prepend(this.element);
       $('body').append(this.visibleCursor);
-      this.show();
       $('body').keydown(this.keyEvent);
+      this.currentPage().parent.element.click(this.handleClick);
       this.textStyle = new Poe.TextStyle(this);
       this.textStyle.applyWord(this.currentWord);
       this.paragraphStyle = new Poe.ParagraphStyle(this);
       this.paragraphStyle.apply();
       this.paragraphStyle.changed(this.paragraphStyleChanged);
+      this.document = this.currentPage().parent;
       this.capsLock = false;
+      this.show();
     }
 
 
@@ -74,6 +79,10 @@ like it is the cursor.
       return this.currentParagraph().parent;
     };
 
+    TextCursor.prototype.document = function() {
+      return this.currentPage().parent;
+    };
+
 
     /*
     Gets the next text node after the cursor. This will loop through all parents up to
@@ -85,42 +94,28 @@ like it is the cursor.
      */
 
     TextCursor.prototype.next = function(applyChanges) {
-      var line, next, old, page, paragraph, word, _ref;
+      var next, word;
       if (applyChanges == null) {
         applyChanges = false;
       }
       next = this.element.nextSibling();
+      if (next && next[0].textContent.charCodeAt(0) === 8203) {
+        next.remove();
+        next = this.element.nextSibling();
+      }
       word = this.currentWord;
-      line = word.parent;
-      paragraph = line.parent;
-      page = paragraph.parent;
-      while (!next) {
-        _ref = [word, word.next()], old = _ref[0], word = _ref[1];
-        if (old.isEmpty()) {
-          old.remove();
+      if (!next) {
+        word = word.next();
+        next = word != null ? word.children().first() : void 0;
+        if (applyChanges && word) {
+          this.currentWord = word;
         }
-        if (!word) {
-          line = line.next();
-          if (!line) {
-            paragraph = paragraph.next();
-            if (!paragraph) {
-              page = page.next();
-              if (!page) {
-                return null;
-              }
-              paragraph = page.child(0);
-            }
-            line = paragraph.child(0);
-          }
-          word = line.child(0);
-        }
-        next = word.children().first();
       }
-      if (applyChanges && next) {
-        this.currentWord = word;
-      }
-      if (this.currentWord !== word) {
+      if (word) {
         this.textStyle.update(word);
+      }
+      if (word) {
+        this.paragraphStyle.update(word.parent.parent);
       }
       return next;
     };
@@ -137,44 +132,28 @@ like it is the cursor.
      */
 
     TextCursor.prototype.prev = function(applyChanges) {
-      var line, old, page, paragraph, prev, word, _ref;
+      var prev, word;
       if (applyChanges == null) {
         applyChanges = false;
       }
       prev = this.element.prevSibling();
+      if (prev && prev[0].textContent.charCodeAt(0) === 8203) {
+        prev.remove();
+        prev = this.element.prevSibling();
+      }
       word = this.currentWord;
-      line = word.parent;
-      paragraph = line.parent;
-      page = paragraph.parent;
-      while (!prev) {
-        _ref = [word, word.prev()], old = _ref[0], word = _ref[1];
-        if (old.isEmpty()) {
-          old.remove();
-        }
-        if (!word) {
-          line = line.prev();
-          if (!line) {
-            paragraph = paragraph.prev();
-            if (!paragraph) {
-              page = page.prev();
-              if (!page) {
-                return null;
-              }
-              paragraph = page.children.last();
-            }
-            line = paragraph.children.last();
-          }
-          word = line.children.last();
-        }
-        if (word.children().length > 0) {
-          prev = word.children().last();
+      if (!prev) {
+        word = word.prev();
+        prev = word != null ? word.children().last() : void 0;
+        if (applyChanges && word) {
+          this.currentWord = word;
         }
       }
-      if (applyChanges && prev) {
-        this.currentWord = word;
-      }
-      if (this.currentWord !== word) {
+      if (word) {
         this.textStyle.update(word);
+      }
+      if (word) {
+        this.paragraphStyle.update(word.parent.parent);
       }
       return prev;
     };
@@ -186,10 +165,15 @@ like it is the cursor.
      */
 
     TextCursor.prototype.moveLeft = function() {
-      var prev;
+      var oldLine, prev;
+      oldLine = this.currentLine();
       prev = this.prev(true);
       if (prev) {
-        prev.before(this.element);
+        if (oldLine === this.currentLine()) {
+          prev.before(this.element);
+        } else {
+          prev.after(this.element);
+        }
       }
       return this;
     };
@@ -201,10 +185,15 @@ like it is the cursor.
      */
 
     TextCursor.prototype.moveRight = function() {
-      var next;
+      var next, oldLine;
+      oldLine = this.currentLine();
       next = this.next(true);
       if (next) {
-        next.after(this.element);
+        if (oldLine === this.currentLine()) {
+          next.after(this.element);
+        } else {
+          next.before(this.element);
+        }
       }
       return this;
     };
@@ -217,8 +206,11 @@ like it is the cursor.
      */
 
     TextCursor.prototype.update = function() {
-      this.visibleCursor.css('top', "" + (this.element.position().top) + "px");
-      this.visibleCursor.css('left', "" + (this.element.position().left) + "px");
+      var pos;
+      pos = this.element.position();
+      this.visibleCursor.css('top', "" + pos.top + "px");
+      this.visibleCursor.css('left', "" + pos.left + "px");
+      this.visibleCursor.css('height', "" + this.textStyle.fontSize + "pt");
       return this;
     };
 
@@ -257,21 +249,21 @@ like it is the cursor.
         _ref1 = line.children;
         for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
           child = _ref1[_j];
-          childWidth += child.element.width();
+          childWidth += child.width();
         }
-        if (!line.next()) {
+        if (!line.nextSibling()) {
           break;
         }
-        if (line.next() instanceof Poe.ListItem) {
+        if (line.nextSibling() instanceof Poe.ListItem) {
           break;
         }
         hasRoom = true;
         while (hasRoom) {
-          child = line.next().child(0);
+          child = line.nextSibling().child(0);
           if (!child) {
             break;
           }
-          if (childWidth + child.element.width() < line.element.outerWidth(false)) {
+          if (childWidth + child.width() < line.element.outerWidth(false)) {
             hasRoom = true;
             child.insertAfter(line.children.last());
           } else {
@@ -279,7 +271,98 @@ like it is the cursor.
           }
         }
       }
+      this.doPageWrap();
       return this;
+    };
+
+    TextCursor.prototype.doPageWrap = function() {
+      var availableSpace, child, line, newPage, next, nextPage, overflowedParagraph, overflows, page, pageHeight, paragraph, pgraph, _i, _j, _len, _len1, _ref, _ref1, _results;
+      overflows = function(page, paragraph) {
+        var pageBottom, paragraphBottom;
+        paragraphBottom = paragraph.position().top + paragraph.height();
+        pageBottom = page.position().top + page.height();
+        pageBottom += parseInt(page.element.css('padding-top'));
+        return paragraphBottom > pageBottom;
+      };
+      _ref = this.document.children;
+      _results = [];
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        page = _ref[_i];
+        while (overflows(page, page.children.last())) {
+          overflowedParagraph = page.children.last();
+          if (!page.next()) {
+            newPage = new Poe.Page();
+            newPage.insertAfter(this.currentPage());
+            newPage.child(0).remove();
+          }
+          next = page.next();
+          paragraph = new Poe.Paragraph();
+          paragraph.setName(page.children.last().name());
+          paragraph.child(0).remove();
+          next.prepend(paragraph);
+          line = overflowedParagraph.children.last();
+          while (overflows(page, line)) {
+            paragraph.prepend(line);
+            line = overflowedParagraph.children.last();
+            if (overflowedParagraph.isEmpty()) {
+              overflowedParagraph.remove();
+              break;
+            }
+          }
+          this.show();
+        }
+        nextPage = page.next();
+        if (!nextPage) {
+          break;
+        }
+        availableSpace = 0;
+        _ref1 = page.children;
+        for (_j = 0, _len1 = _ref1.length; _j < _len1; _j++) {
+          child = _ref1[_j];
+          availableSpace += child.height();
+        }
+        pageHeight = page.height() + page.element.css('padding-top') + page.position().top;
+        availableSpace = pageHeight - availableSpace;
+        console.log(nextPage);
+        _results.push((function() {
+          var _k, _len2, _ref2, _results1;
+          _ref2 = nextPage.children;
+          _results1 = [];
+          for (_k = 0, _len2 = _ref2.length; _k < _len2; _k++) {
+            paragraph = _ref2[_k];
+            console.log(paragraph);
+            _results1.push((function() {
+              var _l, _len3, _ref3, _results2;
+              _ref3 = paragraph.children;
+              _results2 = [];
+              for (_l = 0, _len3 = _ref3.length; _l < _len3; _l++) {
+                line = _ref3[_l];
+                if (line.height() < availableSpace) {
+                  console.log("" + (line.height()) + " < " + availableSpace);
+                  if (paragraph.name() === page.children.last().name()) {
+                    page.children.last().append(line);
+                  } else {
+                    pgraph = new Poe.Paragraph();
+                    pgraph.child(0).remove();
+                    pgraph.insertAfter(page.children.last());
+                    pgraph.append(line);
+                  }
+                  if (paragraph.isEmpty()) {
+                    _results2.push(paragraph.remove());
+                  } else {
+                    _results2.push(void 0);
+                  }
+                } else {
+                  _results2.push(void 0);
+                }
+              }
+              return _results2;
+            })());
+          }
+          return _results1;
+        })());
+      }
+      return _results;
     };
 
 
@@ -291,7 +374,7 @@ like it is the cursor.
      */
 
     TextCursor.prototype.keyEvent = function(event) {
-      var letter, li, line, next, paragraph, prev, prev2, word;
+      var letter, li, line, next, oldLine, oldPage, oldParagraph, oldWord, paragraph, pos, prev, word;
       if (event.ctrlKey) {
         return;
       }
@@ -304,13 +387,32 @@ like it is the cursor.
           this.capsLock = !this.capsLock;
           break;
         case Poe.key.Left:
-          if (this.currentWord.children().length === 1) {
-            this.element.before("&#8203;");
-          }
           this.moveLeft();
           break;
         case Poe.key.Right:
           this.moveRight();
+          break;
+        case Poe.key.Down:
+          if (!this.currentLine().next()) {
+            return;
+          }
+          pos = this.element.position();
+          pos.top = this.currentLine().next().position().top;
+          pos.clientX = pos.left - 2;
+          pos.clientY = pos.top + 2;
+          pos.target = this.currentLine().next().element[0];
+          this.handleClick(pos);
+          break;
+        case Poe.key.Up:
+          if (!this.currentLine().prev()) {
+            return;
+          }
+          pos = this.element.position();
+          pos.top = this.currentLine().prev().position().top;
+          pos.clientX = pos.left + 2;
+          pos.clientY = pos.top + 2;
+          pos.target = this.currentLine().prev().element[0];
+          this.handleClick(pos);
           break;
         case Poe.key.Enter:
           if (this.currentParagraph() instanceof Poe.List) {
@@ -328,10 +430,10 @@ like it is the cursor.
           while (this.element.nextSibling()) {
             word.element.append(this.element.nextSibling());
           }
-          while (this.currentWord.next()) {
+          while (this.currentWord.element.nextSibling()) {
             line.append(this.currentWord.next());
           }
-          while (this.currentLine().next()) {
+          while (this.currentLine().element.nextSibling()) {
             paragraph.append(this.currentLine().next());
           }
           if (this.currentWord.children().length === 1 && this.currentLine().children.length === 1) {
@@ -339,82 +441,58 @@ like it is the cursor.
           }
           console.log(line.children.length);
           this.currentWord = word;
+          if (this.currentWord.isEmpty() && this.currentLine().children.length === 1) {
+            this.currentWord.element.append('&#8203;');
+          }
           this.currentWord.element.prepend(this.element);
           this.textStyle.apply(this.currentWord);
-          this.paragraphStyle.update(this.currentLine());
+          if (event.shiftKey) {
+            this.paragraphStyle.apply();
+          }
+          this.paragraphStyle.update(this.currentParagraph());
+          this.doWordWrap();
           break;
         case Poe.key.Backspace:
-          if (this.currentPage().isEmpty() && this.currentPage().index() === 0) {
-            break;
-          }
-          prev = this.prev();
-          if (this.currentParagraph() instanceof Poe.List) {
-            if (this.currentLine().index() === this.currentParagraph().children.length - 1) {
-              if (this.currentWord.children().length === 1) {
-                li = this.currentLine();
-                paragraph = new Poe.Paragraph();
-                paragraph.insertAfter(this.currentParagraph());
-                this.moveInside(paragraph.child(0).child(0));
-                this.textStyle.applyWord();
-                if (li.parent.isEmpty()) {
-                  li.parent.remove();
-                } else {
-                  li.remove();
+          oldWord = this.currentWord;
+          oldLine = this.currentLine();
+          oldParagraph = this.currentParagraph();
+          oldPage = this.currentPage();
+          prev = this.prev(true);
+          if (oldParagraph instanceof Poe.List) {
+            if (oldLine instanceof Poe.ListItem) {
+              if (oldLine.children.length === 1 && oldWord.children().length === 1) {
+                if (oldLine.index() === oldParagraph.children.length - 1) {
+                  paragraph = new Poe.Paragraph();
+                  paragraph.insertAfter(oldParagraph);
+                  this.moveInside(paragraph.child(0).child(0));
+                  this.textStyle.applyWord(this.currentWord);
+                  this.paragraphStyle.apply();
+                  oldLine.remove();
+                  if (oldParagraph.isEmpty()) {
+                    oldParagraph.remove();
+                  }
                 }
                 break;
               }
             }
           }
-          if (this.currentWord.index() === 0) {
-            word = this.currentWord;
-            if (this.currentWord.children().length !== 1) {
-              if (prev) {
-                prev.before(this.element);
-              }
-              if (prev) {
-                prev.remove();
-              }
-            }
-            console.log(this.currentLine().index());
-            console.log(this.element.prevSibling());
-            if (this.currentLine().index() !== 0 && !this.element.prevSibling()) {
-              prev2 = this.currentLine().prev().children.last();
-              if (this.currentLine().isEmpty()) {
-                this.currentLine().remove();
-              }
-              if (prev2) {
-                this.currentWord = prev2;
-                this.currentWord.append(this.element);
-              }
-              break;
-            } else if (this.currentLine().index() === 0 && !this.element.prevSibling()) {
-              if (this.currentParagraph().index() === 0 && this.currentPage().index() === 0) {
-                break;
-              }
-              prev2 = this.currentParagraph().prev().children.last().children.last();
-              if (prev2) {
-                this.currentWord = prev2;
-                this.currentWord.append(this.element);
-              }
-              if (word.parent.parent.isEmpty()) {
-                word.parent.parent.remove();
-              }
-              break;
-            }
+          if (!prev) {
+            break;
           }
           if (prev) {
+            prev.after(this.element);
+          }
+          if (prev && oldLine === this.currentLine()) {
             prev.remove();
           }
-          if (!this.element.prevSibling()) {
-            prev2 = this.prev();
-            if (prev2) {
-              prev2.after(this.element);
-            }
-            word = this.currentWord.prev();
-            if (this.currentWord.isEmpty()) {
-              this.currentWord.remove();
-              this.currentWord = word;
-            }
+          if (oldPage.isEmpty()) {
+            oldPage.remove();
+          } else if (oldParagraph.isEmpty()) {
+            oldParagraph.remove();
+          } else if (oldLine.isEmpty()) {
+            oldLine.remove();
+          } else if (oldWord.isEmpty()) {
+            oldWord.remove();
           }
           this.doWordWrap();
           break;
@@ -431,7 +509,7 @@ like it is the cursor.
           next = this.element.nextSibling();
           while (next) {
             word.append(next);
-            next = next.nextSibling();
+            next = this.element.nextSibling();
           }
           word.prepend(this.element);
           this.currentWord = word;
@@ -453,6 +531,150 @@ like it is the cursor.
           this.element.before(letter);
           this.doWordWrap();
       }
+      return this.show();
+    };
+
+    TextCursor.prototype.handleClick = function(event) {
+      var checkAbsolute, checkRelative, findInLine, findInPage, findInParagraph, findInWord, obj, self, target, x, y, _ref;
+      _ref = [event.clientX, event.clientY], x = _ref[0], y = _ref[1];
+      target = $(event.target);
+      console.log(target);
+      self = this;
+      checkRelative = (function(_this) {
+        return function(element) {
+          var pos;
+          pos = element.offset();
+          pos.bottom = pos.top + element.height();
+          if (y >= pos.top && y <= pos.bottom) {
+            return true;
+          }
+          return false;
+        };
+      })(this);
+      checkAbsolute = (function(_this) {
+        return function(element) {
+          var pos;
+          pos = element.offset();
+          pos.bottom = pos.top + element.height();
+          pos.right = pos.left + element.width();
+          if (x >= pos.left && x <= pos.right && y >= pos.top && y <= pos.bottom) {
+            return true;
+          }
+          return false;
+        };
+      })(this);
+      findInWord = (function(_this) {
+        return function(word) {
+          var node, range, rect, _i, _len, _ref1, _results;
+          _ref1 = word[0].childNodes;
+          _results = [];
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            node = _ref1[_i];
+            range = document.createRange();
+            range.selectNode(node);
+            rect = range.getClientRects()[0];
+            if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+              self.currentWord = self.currentPage().parent.objectFromElement(word);
+              $(node).before(self.element);
+              break;
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
+        };
+      })(this);
+      findInLine = (function(_this) {
+        return function(line) {
+          var child, word, _i, _len, _ref1, _results;
+          console.log("" + x + " < " + (line.children().first().offset().left));
+          if (x < line.children().first().offset().left) {
+            word = line.children().first();
+            self.currentWord = self.currentPage().parent.objectFromElement(word);
+            return word.prepend(self.element);
+          } else if (x > line.children().last().offset().left + line.children().last().width()) {
+            word = line.children().last();
+            self.currentWord = self.currentPage().parent.objectFromElement(word);
+            return word.append(self.element);
+          } else {
+            _ref1 = line.children();
+            _results = [];
+            for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+              child = _ref1[_i];
+              child = $(child);
+              if (checkAbsolute(child)) {
+                findInWord(child);
+                break;
+              } else {
+                _results.push(void 0);
+              }
+            }
+            return _results;
+          }
+        };
+      })(this);
+      findInParagraph = (function(_this) {
+        return function(paragraph) {
+          var child, _i, _len, _ref1, _results;
+          _ref1 = paragraph.children();
+          _results = [];
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            child = _ref1[_i];
+            child = $(child);
+            if (checkRelative(child)) {
+              findInLine(child);
+              break;
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
+        };
+      })(this);
+      findInPage = (function(_this) {
+        return function(page) {
+          var child, first, last, word, _i, _len, _ref1, _results;
+          last = page.children().last();
+          if (y > last.position().top + last.height()) {
+            word = last.children().last().children().last();
+            word.append(_this.element);
+            _this.currentWord = _this.document.objectFromElement(word);
+            return;
+          }
+          first = page.children().first();
+          if (y < first.position().top) {
+            word = first.children().first().children().first();
+            word.prepend(_this.element);
+            _this.currentWord = _this.document.objectFromElement(word);
+            return;
+          }
+          _ref1 = page.children();
+          _results = [];
+          for (_i = 0, _len = _ref1.length; _i < _len; _i++) {
+            child = _ref1[_i];
+            child = $(child);
+            if (checkRelative(child)) {
+              findInParagraph(child);
+              break;
+            } else {
+              _results.push(void 0);
+            }
+          }
+          return _results;
+        };
+      })(this);
+      obj = this.document.objectFromElement(target);
+      if (obj instanceof Poe.Page) {
+        findInPage(target);
+      } else if (obj instanceof Poe.Paragraph) {
+        findInParagraph(target);
+      } else if (obj instanceof Poe.Line) {
+        findInLine(target);
+      } else if (obj instanceof Poe.Word) {
+        findInWord(target);
+      }
+      this.textStyle.update(this.currentWord);
+      this.paragraphStyle.update(this.currentParagraph());
       return this.show();
     };
 
@@ -492,8 +714,22 @@ like it is the cursor.
      */
 
     TextCursor.prototype.show = function() {
+      var pos;
       this.update();
+      if (Poe.writer) {
+        if (this.currentParagraph() instanceof Poe.List) {
+          Poe.writer.toolbar.setToolBar(Poe.ToolBar.DynamicPart.List);
+        } else if (this.currentParagraph() instanceof Poe.Paragraph) {
+          Poe.writer.toolbar.setToolBar(Poe.ToolBar.DynamicPart.Paragraph);
+        }
+      }
       this.visibleCursor.removeClass('hide');
+      pos = this.element.position();
+      if (pos.top > window.innerHeight - (this.currentLine().height() * 3)) {
+        $('.writer').animate({
+          scrollTop: $('.writer').scrollTop() + (this.currentLine().height() * 3)
+        }, 200);
+      }
       if (this.blinkTimer) {
         return;
       }

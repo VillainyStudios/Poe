@@ -20,7 +20,7 @@ that a {Poe.Line} could be added as a child if no bullet or number is wanted.
 
     function List() {
       var li;
-      this.element = $('<ul></ul>');
+      this.element = $('<ul class="list"></ul>');
       this.children = [];
       $('body').append(this.element);
       li = new Poe.ListItem();

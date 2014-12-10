@@ -25,12 +25,24 @@ a new paragraph.
       this.children = [];
       this.element = $('<p class="paragraph" align="left"></p>');
       $('body').append(this.element);
+      this.element.attr('name', "_pgraph" + Poe.Paragraph.Counter);
+      Poe.Paragraph.Counter += 1;
       if (page) {
         page.append(this);
       }
       line = new Poe.Line();
       this.append(line);
     }
+
+    Paragraph.prototype.name = function() {
+      return this.element.attr('name');
+    };
+
+    Paragraph.prototype.setName = function(name) {
+      return this.element.attr('name', name);
+    };
+
+    Paragraph.Counter = 0;
 
     return Paragraph;
 

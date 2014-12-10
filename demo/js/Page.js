@@ -25,6 +25,12 @@ similar object.
       this.append(new Poe.Paragraph());
     }
 
+    Page.prototype.insertAfter = function(page) {
+      Page.__super__.insertAfter.call(this, page);
+      this.parent.setPageSize(this.parent.pageSize);
+      return this.parent.setPageMargins(this.parent.margins);
+    };
+
     return Page;
 
   })(Poe.TextObject);

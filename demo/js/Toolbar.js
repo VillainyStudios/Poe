@@ -13,94 +13,170 @@ provided by Poe.Writer.document to apply styles to the text.
   Poe.ToolBar = (function() {
 
     /*
-    Creates a new Poe.ToolBar instance.
+    	Creates a new Poe.ToolBar instance.
      */
     function ToolBar(writer) {
-      var elm, key, value, _ref, _ref1;
+      var a, colorItems, colors, elm, i, iconAlignCenter, iconAlignJustify, iconAlignLeft, iconAlignRight, iconListBullet, iconListNumber, key, value, _i, _ref, _ref1, _ref2, _ref3;
       this.writer = writer;
       this.fontAdded = __bind(this.fontAdded, this);
       this.handlePDF = __bind(this.handlePDF, this);
-      this.handleList = __bind(this.handleList, this);
-      this.handleFontColor = __bind(this.handleFontColor, this);
-      this.handleTextAlignment = __bind(this.handleTextAlignment, this);
+      this.btnListNumberClicked = __bind(this.btnListNumberClicked, this);
+      this.btnListBulletClicked = __bind(this.btnListBulletClicked, this);
+      this.handleColorClicked = __bind(this.handleColorClicked, this);
+      this.btnAlignJustifyClicked = __bind(this.btnAlignJustifyClicked, this);
+      this.btnAlignRightClicked = __bind(this.btnAlignRightClicked, this);
+      this.btnAlignCenterClicked = __bind(this.btnAlignCenterClicked, this);
+      this.btnAlignLeftClicked = __bind(this.btnAlignLeftClicked, this);
       this.paragraphStyleChanged = __bind(this.paragraphStyleChanged, this);
       this.handleFontSizeClick = __bind(this.handleFontSizeClick, this);
       this.handleFontClick = __bind(this.handleFontClick, this);
       this.handleShortcut = __bind(this.handleShortcut, this);
-      this.clickToggle = __bind(this.clickToggle, this);
+      this.btnUnderlineClicked = __bind(this.btnUnderlineClicked, this);
+      this.btnItalicClicked = __bind(this.btnItalicClicked, this);
+      this.btnBoldClicked = __bind(this.btnBoldClicked, this);
       this.textStyleChanged = __bind(this.textStyleChanged, this);
+      this.handlePageSize = __bind(this.handlePageSize, this);
       this.handleDynamicToolBar = __bind(this.handleDynamicToolBar, this);
       if (!this.writer) {
         throw new Error('new Poe.Toolbar takes exactly one argument of type Poe.Writer');
       }
+      this.element = $('.toolbar');
       this.textCursor = this.writer.document.textCursor;
       this.textStyle = this.textCursor.textStyle;
-      this.textStyle.changed(this.textStyleChanged);
       this.paragraphStyle = this.textCursor.paragraphStyle;
       this.paragraphStyle.changed(this.paragraphStyleChanged);
-      this.element = $('.toolbar');
+      this.pageSizeDropdown = new Poe.Dropdown(this, 'Letter', 'Page Size');
+      _ref = Poe.Document.PageSize;
+      for (key in _ref) {
+        value = _ref[key];
+        this.pageSizeDropdown.addItem(key);
+      }
+      this.pageSizeDropdown.on('itemClicked', this.handlePageSize);
+      this.dropFonts = new Poe.Dropdown(this, 'Tinos', 'Change Font');
+      this.dropFonts.button.css('width', '125px');
+      this.dropFonts.text.css('float', 'left');
+      this.dropFonts.css('width', '200px');
+      this.dropFontSize = new Poe.Dropdown(this, '12', 'Font Size');
+      this.dropFontSize.addCaret();
+      this.dropFontSize.addItem(8);
+      this.dropFontSize.addItem(9);
+      this.dropFontSize.addItem(10);
+      this.dropFontSize.addItem(11);
+      this.dropFontSize.addItem(12);
+      this.dropFontSize.addItem(14);
+      this.dropFontSize.addItem(18);
+      this.dropFontSize.addItem(24);
+      this.dropFontSize.addItem(30);
+      this.dropFontSize.addItem(36);
+      this.dropFontSize.addItem(48);
+      this.dropFontSize.addItem(60);
+      this.dropFontSize.addItem(72);
+      this.dropFontSize.addItem(96);
+      colorItems = [];
+      colors = ['black', '#428bca', '#5cb85c', '#5bc0de', '#f0ad4e', '#d9534f', '#555', '#777'];
+      this.dropColor = new Poe.Dropdown(this, '', '');
+      colorItems.push(this.dropColor.addItem(""));
+      colorItems.push(this.dropColor.addItem(""));
+      colorItems.push(this.dropColor.addItem(""));
+      colorItems.push(this.dropColor.addItem(""));
+      colorItems.push(this.dropColor.addItem(""));
+      colorItems.push(this.dropColor.addItem(""));
+      colorItems.push(this.dropColor.addItem(""));
+      colorItems.push(this.dropColor.addItem(""));
+      colorItems.push(this.dropColor.addItem(""));
+      this.dropColor.button.remove();
+      this.dropColor.button = $('<span style="padding-left: 4px" class="dropdown-toggle" type="button" data-toggle="dropdown" aria-expanded="true">&nbsp;</span>');
+      this.dropColor.container.prepend(this.dropColor.button);
+      this.dropColor.button.css('background-color', 'black');
+      this.dropColor.button.css('padding-left', '15px');
+      this.dropColor.childContainer.css('width', '200px');
+      this.dropColor.button.css('border-radius', '3px');
+      this.dropColor.button.css('float', 'right');
+      for (i = _i = 0, _ref1 = colorItems.length; 0 <= _ref1 ? _i <= _ref1 : _i >= _ref1; i = 0 <= _ref1 ? ++_i : --_i) {
+        if (!colorItems[i]) {
+          continue;
+        }
+        a = colorItems[i].children('a');
+        colorItems[i].css('float', 'left');
+        a.addClass('color-list-item');
+        a.css('background-color', colors[i]);
+      }
+      this.dropFonts.button.append(this.dropColor.element());
+      this.btnBold = new Poe.Button(this, '<b>B</b>');
+      this.btnItalic = new Poe.Button(this, '<i>I</i>');
+      this.btnUnderline = new Poe.Button(this, '<u>U</u>');
+      this.groupTextFormat = new Poe.ButtonGroup(this, [this.btnBold, this.btnItalic, this.btnUnderline]);
+      this.btnAlignLeft = new Poe.Button(this);
+      this.btnAlignCenter = new Poe.Button(this);
+      this.btnAlignRight = new Poe.Button(this);
+      this.btnAlignJustify = new Poe.Button(this);
+      iconAlignLeft = new Poe.Glyphicon('align-left');
+      iconAlignCenter = new Poe.Glyphicon('align-center');
+      iconAlignRight = new Poe.Glyphicon('align-right');
+      iconAlignJustify = new Poe.Glyphicon('align-justify');
+      this.btnAlignLeft.setIcon(iconAlignLeft);
+      this.btnAlignCenter.setIcon(iconAlignCenter);
+      this.btnAlignRight.setIcon(iconAlignRight);
+      this.btnAlignJustify.setIcon(iconAlignJustify);
+      this.groupParagraphAlign = new Poe.ButtonGroup(this, [this.btnAlignLeft, this.btnAlignCenter, this.btnAlignRight, this.btnAlignJustify]);
+      this.groupParagraphAlign.setRadio(true);
+      this.btnListBullet = new Poe.Button(this);
+      this.btnListNumber = new Poe.Button(this);
+      iconListBullet = new Poe.Glyphicon('list');
+      iconListNumber = new Poe.Glyphicon('list-alt');
+      this.btnListBullet.setIcon(iconListBullet);
+      this.btnListNumber.setIcon(iconListNumber);
+      this.groupList = new Poe.ButtonGroup(this, [this.btnListBullet, this.btnListNumber]);
+      this.dropFonts.on('itemClicked', this.handleFontClick);
+      this.dropFontSize.on('itemClicked', this.handleFontSizeClick);
+      this.btnBold.on('click', this.btnBoldClicked);
+      this.btnItalic.on('click', this.btnItalicClicked);
+      this.btnUnderline.on('click', this.btnUnderlineClicked);
+      this.btnAlignLeft.on('click', this.btnAlignLeftClicked);
+      this.btnAlignCenter.on('click', this.btnAlignCenterClicked);
+      this.btnAlignRight.on('click', this.btnAlignRightClicked);
+      this.btnAlignJustify.on('click', this.btnAlignJustifyClicked);
+      this.btnListBullet.on('click', this.btnListBulletClicked);
+      this.btnListNumber.on('click', this.btnListNumberClicked);
+      this.dropColor.on('itemClicked', this.handleColorClicked);
+      this.textStyle.changed(this.textStyleChanged);
       this.elements = {
         dynamic: $('#dynamic .text')
       };
       this.elements.Paragraph = {
-        bold: $('.bold'),
-        italic: $('.italic'),
-        underline: $('.underline'),
-        fonts: $('#font-list'),
-        font: $('#font-select .text'),
-        fontSize: $('#font-size-select .text'),
-        color: $('#color-pick'),
-        bullet: $('#list-bullet'),
-        number: $('#list-number'),
-        alignleft: $('#align-left'),
-        aligncenter: $('#align-center'),
-        alignright: $('#align-right'),
-        alignjustify: $('#align-justify')
+        fonts: this.dropFonts,
+        fontSize: this.dropFontSize,
+        textFormatting: this.groupTextFormat,
+        alignment: this.groupParagraphAlign,
+        lists: this.groupList
       };
       this.elements.Page = {
-        Nothing: $()
+        pageSize: this.pageSizeDropdown
       };
       this.elements.List = {
-        bold: this.elements.Paragraph.bold,
-        italic: this.elements.Paragraph.italic,
-        underline: this.elements.Paragraph.underline,
-        color: this.elements.Paragraph.color,
-        fonts: this.elements.Paragraph.fonts,
-        font: this.elements.Paragraph.font,
-        fontSize: this.elements.Paragraph.fontSize,
-        alignleft: this.elements.Paragraph.alignleft,
-        alignright: this.elements.Paragraph.alignright,
-        aligncenter: this.elements.Paragraph.aligncenter,
-        alignjustify: this.elements.Paragraph.alignjustify,
+        fonts: this.dropFonts,
+        fontSize: this.dropFontSize,
+        textFormatting: this.groupTextFormat,
+        alignment: this.groupParagraphAlign,
         removeItem: $('#list-RemoveItem')
       };
       this.textStyleChanged(this.textStyle);
       this.paragraphStyleChanged(this.paragraphStyle);
-      this.elements.Paragraph.bold.click(this.clickToggle);
-      this.elements.Paragraph.italic.click(this.clickToggle);
-      this.elements.Paragraph.underline.click(this.clickToggle);
       $('body').keydown(this.handleShortcut);
-      $('#font-list').on('click', 'li', this.handleFontClick);
-      $('#font-size-list li').click(this.handleFontSizeClick);
-      $('#alignment button').click(this.handleTextAlignment);
-      $('#color-list .color-list-item').click(this.handleFontColor);
-      $('#lists button').click(this.handleList);
       $('#print-pdf').click(this.handlePDF);
       $('#dynamic-list li a').click(this.handleDynamicToolBar);
       this.fontManager = new Poe.FontManager();
       this.fontManager.on('newFont', this.fontAdded);
       this.fontManager.loadDefaults();
       this.currentToolBar = '';
-      _ref = Poe.ToolBar.DynamicPart;
-      for (key in _ref) {
-        value = _ref[key];
-        _ref1 = this.elements[value];
-        for (key in _ref1) {
-          elm = _ref1[key];
-          if (elm.parent()[0] === this.element[0]) {
+      _ref2 = Poe.ToolBar.DynamicPart;
+      for (key in _ref2) {
+        value = _ref2[key];
+        _ref3 = this.elements[value];
+        for (key in _ref3) {
+          elm = _ref3[key];
+          if (elm) {
             elm.hide();
-          } else {
-            elm.parent().hide();
           }
         }
       }
@@ -115,7 +191,9 @@ provided by Poe.Writer.document to apply styles to the text.
 
     ToolBar.prototype.setToolBar = function(dynamicPart) {
       var key, oldToolBar, value, _ref, _ref1, _ref2, _results;
-      console.log("Changing ToolBar: " + dynamicPart);
+      if (dynamicPart === this.currentToolBar) {
+        return;
+      }
       oldToolBar = this.currentToolBar;
       _ref = Poe.ToolBar.DynamicPart;
       for (key in _ref) {
@@ -126,27 +204,16 @@ provided by Poe.Writer.document to apply styles to the text.
           break;
         }
       }
-      if (oldToolBar === this.currentToolBar) {
-        return;
-      }
       _ref1 = this.elements[oldToolBar];
       for (key in _ref1) {
         value = _ref1[key];
-        if (value.parent()[0] === this.element[0]) {
-          value.hide();
-        } else {
-          value.parent().hide();
-        }
+        value.hide();
       }
       _ref2 = this.elements[this.currentToolBar];
       _results = [];
       for (key in _ref2) {
         value = _ref2[key];
-        if (value.parent()[0] === this.element[0]) {
-          _results.push(value.show());
-        } else {
-          _results.push(value.parent().show());
-        }
+        _results.push(value.show());
       }
       return _results;
     };
@@ -157,12 +224,22 @@ provided by Poe.Writer.document to apply styles to the text.
       return this.setToolBar(name);
     };
 
+    ToolBar.prototype.handlePageSize = function(event) {
+      var size, text;
+      text = $(event.target).html();
+      size = Poe.Document.PageSize[text];
+      if (size) {
+        this.writer.document.setPageSize(size);
+        return this.pageSizeDropdown.setText(text);
+      }
+    };
+
 
     /*
-    A callback given to Poe.TextCursor.textStyle.
-    @see Poe.TextStyle#changed
-    @param style [Poe.TextStyle] the style to update the toolbar with
-    @private
+    	A callback given to Poe.TextCursor.textStyle.
+    	@see Poe.TextStyle#changed
+    	@param style [Poe.TextStyle] the style to update the toolbar with
+    	@private
      */
 
     ToolBar.prototype.textStyleChanged = function(style) {
@@ -175,39 +252,38 @@ provided by Poe.Writer.document to apply styles to the text.
         }
       };
       this.textStyle = style;
-      activate(this.elements.Paragraph.bold, style.bold);
-      activate(this.elements.Paragraph.italic, style.italic);
-      activate(this.elements.Paragraph.underline, style.underline);
-      this.elements.Paragraph.font.html(style.font);
-      this.elements.Paragraph.fontSize.html(style.fontSize);
-      return this.elements.Paragraph.color.css('background-color', style.color);
+      this.btnBold.active(style.bold);
+      this.btnItalic.active(style.italic);
+      this.btnUnderline.active(style.underline);
+      this.dropFonts.setText(style.font);
+      this.dropFontSize.setText(style.fontSize);
+      return this.dropColor.button.css('background-color', style.color);
     };
 
+    ToolBar.prototype.btnBoldClicked = function() {
+      this.textStyle.bold = !this.textStyle.bold;
+      this.textStyle.applyChar();
+      return this.textStyleChanged(this.textStyle);
+    };
 
-    /*
-    A event handler for when a button is clicked on the toolbar
-    @param event [MouseClickEvent] the event that happend
-    @private
-     */
+    ToolBar.prototype.btnItalicClicked = function() {
+      this.textStyle.italic = !this.textStyle.italic;
+      this.textStyle.applyChar();
+      return this.textStyleChanged(this.textStyle);
+    };
 
-    ToolBar.prototype.clickToggle = function(event) {
-      if (event.target === this.elements.Paragraph.bold[0]) {
-        this.textStyle.bold = !this.textStyle.bold;
-      } else if (event.target === this.elements.Paragraph.italic[0]) {
-        this.textStyle.italic = !this.textStyle.italic;
-      } else if (event.target === this.elements.Paragraph.underline[0]) {
-        this.textStyle.underline = !this.textStyle.underline;
-      }
+    ToolBar.prototype.btnUnderlineClicked = function() {
+      this.textStyle.underline = !this.textStyle.underline;
       this.textStyle.applyChar();
       return this.textStyleChanged(this.textStyle);
     };
 
 
     /*
-    A even handler for toolbar shortcuts. Returns immediately if
-    the control key is not pressed.
-    @param event [MouseDownEvent] the event
-    @private
+    	A even handler for toolbar shortcuts. Returns immediately if
+    	the control key is not pressed.
+    	@param event [MouseDownEvent] the event
+    	@private
      */
 
     ToolBar.prototype.handleShortcut = function(event) {
@@ -217,12 +293,12 @@ provided by Poe.Writer.document to apply styles to the text.
       }
       toggle = (function(_this) {
         return function(button) {
-          button.toggleClass('active');
-          if (button === _this.elements.Paragraph.bold) {
+          button.active(true);
+          if (button === _this.btnBold) {
             _this.textStyle.bold = !_this.textStyle.bold;
-          } else if (button === _this.elements.Paragraph.italic) {
+          } else if (button === _this.btnItalic) {
             _this.textStyle.italic = !_this.textStyle.italic;
-          } else if (button === _this.elements.Paragraph.underline) {
+          } else if (button === _this.btnUnderline) {
             _this.textStyle.underline = !_this.textStyle.underline;
           }
           _this.textStyle.applyChar();
@@ -232,13 +308,13 @@ provided by Poe.Writer.document to apply styles to the text.
       switch (event.keyCode) {
         case Poe.key.B:
           event.preventDefault();
-          return toggle(this.elements.Paragraph.bold);
+          return toggle(this.btnBold);
         case Poe.key.I:
           event.preventDefault();
-          return toggle(this.elements.Paragraph.italic);
+          return toggle(this.btnItalic);
         case Poe.key.U:
           event.preventDefault();
-          return toggle(this.elements.Paragraph.underline);
+          return toggle(this.btnUnderline);
         default:
           return event.preventDefault();
       }
@@ -246,124 +322,106 @@ provided by Poe.Writer.document to apply styles to the text.
 
 
     /*
-    Event handler for when a new font is clicked. Updates
-    the current style and applies the style
-    @param event [MouseClickEvent] the event that happened.
-    @private
+    	Event handler for when a new font is clicked. Updates
+    	the current style and applies the style
+    	@param event [MouseClickEvent] the event that happened.
+    	@private
      */
 
     ToolBar.prototype.handleFontClick = function(event) {
       var name;
       name = $(event.target).html();
-      this.elements.Paragraph.font.html(name);
+      this.dropFonts.setText(name);
       this.textStyle.font = name;
       return this.textStyle.applyChar();
     };
 
 
     /*
-    Event handler for when a font size is clicked.
-    @param event [MouseClickEvent] the event that triggered the callback
-    @private
+    	Event handler for when a font size is clicked.
+    	@param event [MouseClickEvent] the event that triggered the callback
+    	@private
      */
 
     ToolBar.prototype.handleFontSizeClick = function(event) {
       var name;
       name = $(event.target).html();
-      this.elements.Paragraph.fontSize.html(parseInt(name.replace('px', '')));
+      this.dropFontSize.setText(name);
       this.textStyle.fontSize = parseInt(name.replace('px', ''));
       return this.textStyle.applyChar();
     };
 
 
     /*
-    Called when the line style changes of the {Poe.TextCursor}
-    @param style [Poe.ParagraphStyle] the style that has changed
-    @private
+    	Called when the line style changes of the {Poe.TextCursor}
+    	@param style [Poe.ParagraphStyle] the style that has changed
+    	@private
      */
 
     ToolBar.prototype.paragraphStyleChanged = function(style) {
-      var element;
-      this.elements.Paragraph.alignleft.removeClass('active');
-      this.elements.Paragraph.aligncenter.removeClass('active');
-      this.elements.Paragraph.alignright.removeClass('active');
-      this.elements.Paragraph.alignjustify.removeClass('active');
+      this.btnAlignLeft.active(false);
+      this.btnAlignCenter.active(false);
+      this.btnAlignRight.active(false);
+      this.btnAlignJustify.active(false);
       switch (style.align) {
         case Poe.ParagraphStyle.Align.Left:
-          element = this.elements.Paragraph.alignleft;
-          break;
+          return this.btnAlignLeft.active(true);
         case Poe.ParagraphStyle.Align.Center:
-          element = this.elements.Paragraph.aligncenter;
-          break;
+          return this.btnAlignCenter.active(true);
         case Poe.ParagraphStyle.Align.Right:
-          element = this.elements.Paragraph.alignright;
-          break;
+          return this.btnAlignRight.active(true);
         case Poe.ParagraphStyle.Align.Justify:
-          element = this.elements.Paragraph.alignjustify;
+          return this.btnAlignJustify.active(true);
       }
-      return element.addClass('active');
     };
 
-
-    /*
-    Event handler for text align buttons in the toolbar.
-    @param event [MouseClickEvent] the event that triggered this callback
-    @private
-     */
-
-    ToolBar.prototype.handleTextAlignment = function(event) {
-      var target;
-      target = event.target;
-      if (target === this.elements.Paragraph.alignleft[0]) {
-        this.paragraphStyle.align = Poe.ParagraphStyle.Align.Left;
-      } else if (target === this.elements.Paragraph.aligncenter[0]) {
-        this.paragraphStyle.align = Poe.ParagraphStyle.Align.Center;
-      } else if (target === this.elements.Paragraph.alignright[0]) {
-        this.paragraphStyle.align = Poe.ParagraphStyle.Align.Right;
-      } else if (target === this.elements.Paragraph.alignjustify[0]) {
-        this.paragraphStyle.align = Poe.ParagraphStyle.Align.Justify;
-      }
+    ToolBar.prototype.btnAlignLeftClicked = function() {
+      this.paragraphStyle.align = Poe.ParagraphStyle.Align.Left;
       return this.paragraphStyle.apply();
     };
 
-
-    /*
-    Event handler for text color.
-    @param
-     */
-
-    ToolBar.prototype.handleFontColor = function(event) {
-      var color, target;
-      target = $(event.target);
-      color = target.css('background-color');
-      this.elements.Paragraph.color.css('background-color', color);
-      this.textStyle.color = color;
-      return this.textStyle.applyChar();
+    ToolBar.prototype.btnAlignCenterClicked = function() {
+      this.paragraphStyle.align = Poe.ParagraphStyle.Align.Center;
+      return this.paragraphStyle.apply();
     };
 
+    ToolBar.prototype.btnAlignRightClicked = function() {
+      this.paragraphStyle.align = Poe.ParagraphStyle.Align.Right;
+      return this.paragraphStyle.apply();
+    };
 
-    /*
-    Event handler for list buttons. Creates a new list when
-    the button is clicked.
-    @param event [MouseClickEvent] the event that triggered the function
-     */
+    ToolBar.prototype.btnAlignJustifyClicked = function() {
+      this.paragraphStyle.align = Poe.ParagraphStyle.Align.Justify;
+      return this.paragraphStyle.apply();
+    };
 
-    ToolBar.prototype.handleList = function(event) {
-      var list, paragraph, target;
-      target = event.target;
+    ToolBar.prototype.handleColorClicked = function(event) {
+      var color, target;
+      event.stopPropagation();
+      target = $(event.target);
+      color = target.css('background-color');
+      this.dropColor.button.css('background-color', color);
+      this.textStyle.color = color;
+      this.textStyle.applyChar();
+      return this.element.click();
+    };
+
+    ToolBar.prototype.btnListBulletClicked = function() {
+      return this.createList(Poe.List.ListType.Bullets);
+    };
+
+    ToolBar.prototype.btnListNumberClicked = function() {
+      return this.createList(Poe.List.ListType.Numbers);
+    };
+
+    ToolBar.prototype.createList = function(type) {
+      var list, paragraph;
       list = new Poe.List();
-      if (target === this.elements.Paragraph.bullet[0]) {
-        list.setListType(Poe.List.ListType.Bullets);
-      } else if (target === this.elements.Paragraph.number[0]) {
-        list.setListType(Poe.List.ListType.Numbers);
-      }
+      list.setListType(type);
       paragraph = this.textCursor.currentParagraph();
       list.insertAfter(this.textCursor.currentParagraph());
       this.textCursor.moveInside(list.child(0).child(0));
-      this.textStyle.applyChar();
-      if (paragraph.isEmpty()) {
-        return paragraph.remove();
-      }
+      return this.textStyle.applyChar();
     };
 
     ToolBar.prototype.handlePDF = function(event) {
@@ -371,10 +429,9 @@ provided by Poe.Writer.document to apply styles to the text.
     };
 
     ToolBar.prototype.fontAdded = function(name) {
-      var item;
-      item = $("<li role='presentation'><a role='menuitem' tabindex='-1' href='#'>" + name + "</a></li>");
-      this.elements.Paragraph.fonts.append(item);
-      return item.children('a').css('font-family', name);
+      var li;
+      li = this.elements.Paragraph.fonts.addItem(name);
+      return li.css('font-family', "'" + name + "'");
     };
 
     return ToolBar;

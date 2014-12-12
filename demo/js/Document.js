@@ -25,6 +25,7 @@ page margins and page size.
         right: 96
       });
       this.pdf = new Poe.PDF(this);
+      this.docx = new Poe.Docx(this);
       this.append(new Poe.Page());
       this.textCursor = new Poe.TextCursor(this.children[0].child(0).child(0).child(0));
     }
@@ -95,6 +96,9 @@ page margins and page size.
         page.element.css('width', "" + size.width);
       }
       this.pageSize = size;
+      if (this.textCursor) {
+        this.textCursor.show();
+      }
       return this;
     };
 
@@ -116,6 +120,9 @@ page margins and page size.
         page.element.css('padding-bottom', margins.bottom);
       }
       this.margins = margins;
+      if (this.textCursor) {
+        this.textCursor.show();
+      }
       return this;
     };
 
@@ -144,6 +151,18 @@ page margins and page size.
       Letter: {
         height: 1056,
         width: 816
+      },
+      Legal: {
+        width: 8.5 * 96,
+        height: 14 * 96
+      },
+      Ledger: {
+        width: 17 * 96,
+        height: 11 * 96
+      },
+      Tabloid: {
+        width: 11 * 96,
+        height: 17 * 96
       }
     };
 

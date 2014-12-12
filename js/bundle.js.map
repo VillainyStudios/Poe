@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "file": "bundle.js",
+  "sourceRoot": "..",
+  "sources": [
+    "coffee/bundle.js"
+  ],
+  "names": [],
+  "mappings": ";AAAA;AAAA;AAAA"
+}

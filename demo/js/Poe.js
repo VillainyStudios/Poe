@@ -3,7 +3,8 @@
   window.Poe = {};
 
   $(document).ready(function() {
-    return Poe.writer = new Poe.Writer('#Poe');
+    Poe.writer = new Poe.Writer('#Poe');
+    return $('.poe-tooltip').tooltip();
   });
 
   if (!Array.prototype.last) {

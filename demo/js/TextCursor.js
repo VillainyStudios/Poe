@@ -93,11 +93,8 @@ like it is the cursor.
     @return [jQuery or null] the next text node found
      */
 
-    TextCursor.prototype.next = function(applyChanges) {
+    TextCursor.prototype.next = function() {
       var next, word;
-      if (applyChanges == null) {
-        applyChanges = false;
-      }
       next = this.element.nextSibling();
       if (next && next[0].textContent.charCodeAt(0) === 8203) {
         next.remove();
@@ -107,7 +104,7 @@ like it is the cursor.
       if (!next) {
         word = word.next();
         next = word != null ? word.children().first() : void 0;
-        if (applyChanges && word) {
+        if (word) {
           this.currentWord = word;
         }
       }
@@ -131,11 +128,8 @@ like it is the cursor.
     @return [jQuery or null] the previous text node found
      */
 
-    TextCursor.prototype.prev = function(applyChanges) {
+    TextCursor.prototype.prev = function() {
       var prev, word;
-      if (applyChanges == null) {
-        applyChanges = false;
-      }
       prev = this.element.prevSibling();
       if (prev && prev[0].textContent.charCodeAt(0) === 8203) {
         prev.remove();
@@ -145,7 +139,7 @@ like it is the cursor.
       if (!prev) {
         word = word.prev();
         prev = word != null ? word.children().last() : void 0;
-        if (applyChanges && word) {
+        if (word) {
           this.currentWord = word;
         }
       }
@@ -167,7 +161,7 @@ like it is the cursor.
     TextCursor.prototype.moveLeft = function() {
       var oldLine, prev;
       oldLine = this.currentLine();
-      prev = this.prev(true);
+      prev = this.prev();
       if (prev) {
         if (oldLine === this.currentLine()) {
           prev.before(this.element);
@@ -187,7 +181,7 @@ like it is the cursor.
     TextCursor.prototype.moveRight = function() {
       var next, oldLine;
       oldLine = this.currentLine();
-      next = this.next(true);
+      next = this.next();
       if (next) {
         if (oldLine === this.currentLine()) {
           next.after(this.element);
@@ -294,6 +288,7 @@ like it is the cursor.
             newPage = new Poe.Page();
             newPage.insertAfter(this.currentPage());
             newPage.child(0).remove();
+            console.log(newPage.element);
           }
           next = page.next();
           paragraph = new Poe.Paragraph();
@@ -323,7 +318,6 @@ like it is the cursor.
         }
         pageHeight = page.height() + page.element.css('padding-top') + page.position().top;
         availableSpace = pageHeight - availableSpace;
-        console.log(nextPage);
         _results.push((function() {
           var _k, _len2, _ref2, _results1;
           _ref2 = nextPage.children;
@@ -439,7 +433,6 @@ like it is the cursor.
           if (this.currentWord.children().length === 1 && this.currentLine().children.length === 1) {
             this.currentWord.element.append('&#8203;');
           }
-          console.log(line.children.length);
           this.currentWord = word;
           if (this.currentWord.isEmpty() && this.currentLine().children.length === 1) {
             this.currentWord.element.append('&#8203;');
@@ -457,7 +450,7 @@ like it is the cursor.
           oldLine = this.currentLine();
           oldParagraph = this.currentParagraph();
           oldPage = this.currentPage();
-          prev = this.prev(true);
+          prev = this.prev();
           if (oldParagraph instanceof Poe.List) {
             if (oldLine instanceof Poe.ListItem) {
               if (oldLine.children.length === 1 && oldWord.children().length === 1) {
@@ -538,7 +531,6 @@ like it is the cursor.
       var checkAbsolute, checkRelative, findInLine, findInPage, findInParagraph, findInWord, obj, self, target, x, y, _ref;
       _ref = [event.clientX, event.clientY], x = _ref[0], y = _ref[1];
       target = $(event.target);
-      console.log(target);
       self = this;
       checkRelative = (function(_this) {
         return function(element) {

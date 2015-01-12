@@ -25,8 +25,10 @@ class Poe.Writer
         $(parentSelector).append @element
     @element.append @document.element
 
-    @toolbarHelper = new Poe.ToolbarHelper(this)
-    
+    @toolbarHelper = new Poe.ToolBarHelper(this)
+    if (!Poe.OSjs)
+      @toolbar = new Poe.ToolBar(this)
+
     $('body').resize @windowResized
     @element.scroll @windowResized
     @windowResized()

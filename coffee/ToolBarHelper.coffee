@@ -1,7 +1,7 @@
-class Poe.ToolbarHelper
+class Poe.ToolBarHelper
 	constructor: (@writer) ->
 		if not @writer
-			throw new Error('Poe.ToolbarHelper takes exactly one argument of type Poe.Writer')
+			throw new Error('Poe.ToolBarHelper takes exactly one argument of type Poe.Writer')
 		@textCursor = @writer.document.textCursor
 		@textStyle = @textCursor.textStyle
 		@paragraphStyle = @textCursor.paragraphStyle
@@ -12,6 +12,9 @@ class Poe.ToolbarHelper
 		@fontManager = new Poe.FontManager()
 		$('body').keydown @handleShortcut
 
+	###
+	
+	###
 	init: () ->
 		@fontManager.loadDefaults()
 
@@ -82,7 +85,7 @@ class Poe.ToolbarHelper
 				event.preventDefault()
 
 	fontClicked: (fontName) =>
-		@textStyle.font = name
+		@textStyle.font = fontName
 		@textStyle.applyChar()
 
 	###
@@ -123,6 +126,9 @@ class Poe.ToolbarHelper
 		list.setListType type
 
 		paragraph = @textCursor.currentParagraph()
-		list.insertAfter paragraph
+		if (paragraph instanceof Poe.List)
+			paragraph.append list
+		else
+			list.insertAfter paragraph
 		@textCursor.moveInside list.child(0).child(0)
 		@textStyle.applyChar()

@@ -10,7 +10,7 @@ class Poe.ToolBar
 	###
 	constructor: (@writer) ->
 		if not @writer
-			throw new Error('new Poe.Toolbar takes exactly one argument of type Poe.Writer')
+			throw new Error('new Poe.ToolBar takes exactly one argument of type Poe.Writer')
 		@element = $ '.toolbar'
 		@textCursor = @writer.document.textCursor
 		@textStyle = @textCursor.textStyle
@@ -18,6 +18,8 @@ class Poe.ToolBar
 		@paragraphStyle = @textCursor.paragraphStyle
 		@paragraphStyle.changed @paragraphStyleChanged
 
+		# Create the Page size dropdown. This uses the enum Poe.Document.PageSize to populate
+		# the dropdown items
 		@pageSizeDropdown = new Poe.Dropdown(this, 'Letter', 'Page Size')
 		for key, value of Poe.Document.PageSize
 			@pageSizeDropdown.addItem key
@@ -25,9 +27,12 @@ class Poe.ToolBar
 
 		# The fonts for this are added when the Poe.FontManager gets a new font
 		@dropFonts = new Poe.Dropdown(this, 'Tinos', 'Change Font')
+		# Some formatting. I do this because I would like for the toolbar to be self contained without
+		# being in the index.html file
 		@dropFonts.button.css 'width', '125px'
 		@dropFonts.text.css 'float', 'left'
 		@dropFonts.css 'width', '200px'
+		
 		@dropFontSize = new Poe.Dropdown(this, '12', 'Font Size')
 		@dropFontSize.addCaret()
 		@dropFontSize.addItem 8
@@ -107,24 +112,25 @@ class Poe.ToolBar
 		@dropFonts.on 'itemClicked', @handleFontClick
 		@dropFontSize.on 'itemClicked', @handleFontSizeClick
 
-		@btnBold.on 'click', @btnBoldClicked
-		@btnItalic.on 'click', @btnItalicClicked
-		@btnUnderline.on 'click', @btnUnderlineClicked
+		@btnBold.on 'click', @writer.toolbarHelper.btnBoldClicked
+		@btnItalic.on 'click', @writer.toolbarHelper.btnItalicClicked
+		@btnUnderline.on 'click', @writer.toolbarHelper.btnUnderlineClicked
 
-		@btnAlignLeft.on 'click', @btnAlignLeftClicked
-		@btnAlignCenter.on 'click', @btnAlignCenterClicked
-		@btnAlignRight.on 'click', @btnAlignRightClicked
-		@btnAlignJustify.on 'click', @btnAlignJustifyClicked
+		@btnAlignLeft.on 'click', @writer.toolbarHelper.btnAlignLeftClicked
+		@btnAlignCenter.on 'click', @writer.toolbarHelper.btnAlignCenterClicked
+		@btnAlignRight.on 'click', @writer.toolbarHelper.btnAlignRightClicked
+		@btnAlignJustify.on 'click', @writer.toolbarHelper.btnAlignJustifyClicked
 
 		@btnListBullet.on 'click', @btnListBulletClicked
 		@btnListNumber.on 'click', @btnListNumberClicked
 		@dropColor.on 'itemClicked', @handleColorClicked
-		@textStyle.changed @textStyleChanged
 
 
+		#@elements is for the dynamic toolbar
 		@elements =
 			dynamic: $ '#dynamic .text'
 
+		# Items on the Paragraph toolbar
 		@elements.Paragraph =
 			fonts: @dropFonts
 			fontSize: @dropFontSize
@@ -132,9 +138,11 @@ class Poe.ToolBar
 			alignment: @groupParagraphAlign
 			lists: @groupList
 
+		# Items on the Page toolbar
 		@elements.Page =
 			pageSize: @pageSizeDropdown
 
+		# Items on the List toolbar
 		@elements.List =
 			fonts: @dropFonts
 			fontSize: @dropFontSize
@@ -142,30 +150,41 @@ class Poe.ToolBar
 			alignment: @groupParagraphAlign
 			removeItem: $ '#list-RemoveItem'
 
-		# Go ahead and update to match first word
-		@textStyleChanged @textStyle
-		@paragraphStyleChanged @paragraphStyle
-
-		$('body').keydown @handleShortcut
 		$('#print-pdf').click @handlePDF
 		$('#dynamic-list li a').click @handleDynamicToolBar
 
-		@fontManager = new Poe.FontManager()
-		@fontManager.on('newFont', @fontAdded)
-		@fontManager.loadDefaults()
+		# Add the event handler for fonts being added, and call init which loads the fonts
+		@writer.toolbarHelper.addEventHandler('fontAdded', @fontAdded)
+		@writer.toolbarHelper.init()
+		
+		# Loop through and hide every toolbar item.
+		# That way when the toolbar is set below it will only have
+		# the correct items.
 		@currentToolBar = ''
 		for key, value of Poe.ToolBar.DynamicPart
 			for key, elm of @elements[value]
 				if elm
 					elm.hide()
 
+		# Set the current toolbar to show paragraph items
 		@setToolBar Poe.ToolBar.DynamicPart.Paragraph
+		
+		#Register handlers for when the text/paragraph style changed
+		@writer.toolbarHelper.addEventHandler 'textStyleChanged', @textStyleChanged
+		@writer.toolbarHelper.addEventHandler 'paragraphStyleChanged', @paragraphStyleChanged
+		
+		# Go ahead and update to match first word
+		@textStyleChanged @textStyle
+		@paragraphStyleChanged @paragraphStyle
 
 	@DynamicPart =
 		Paragraph: 'Paragraph'
 		List: 'List'
 		Page: 'Page'
 
+	###
+	Sets the current toolbar to the 
+	###
 	setToolBar: (dynamicPart) ->
 		if dynamicPart == @currentToolBar
 			return
@@ -217,56 +236,6 @@ class Poe.ToolBar
 		@dropFontSize.setText style.fontSize
 		@dropColor.button.css 'background-color', style.color
 
-	btnBoldClicked: =>
-		@textStyle.bold = !@textStyle.bold
-		@textStyle.applyChar()
-		@textStyleChanged @textStyle
-
-	btnItalicClicked: =>
-		@textStyle.italic = !@textStyle.italic
-		@textStyle.applyChar()
-		@textStyleChanged @textStyle
-
-	btnUnderlineClicked: =>
-		@textStyle.underline = !@textStyle.underline
-		@textStyle.applyChar()
-		@textStyleChanged @textStyle
-
-	###
-	A even handler for toolbar shortcuts. Returns immediately if
-	the control key is not pressed.
-	@param event [MouseDownEvent] the event
-	@private
-	###
-	handleShortcut: (event) =>
-		if not event.ctrlKey
-			return
-
-		toggle = (button) =>
-			button.active true
-			if button == @btnBold
-				@textStyle.bold = !@textStyle.bold
-			else if button == @btnItalic
-				@textStyle.italic = !@textStyle.italic
-			else if button == @btnUnderline
-				@textStyle.underline = !@textStyle.underline
-
-			@textStyle.applyChar()
-			@textStyleChanged @textStyle
-
-		switch event.keyCode
-			when Poe.key.B
-				event.preventDefault()
-				toggle @btnBold
-			when Poe.key.I
-				event.preventDefault()
-				toggle @btnItalic
-			when Poe.key.U
-				event.preventDefault()
-				toggle @btnUnderline
-			else
-				event.preventDefault()
-
 	###
 	Event handler for when a new font is clicked. Updates
 	the current style and applies the style
@@ -276,19 +245,17 @@ class Poe.ToolBar
 	handleFontClick: (event) =>
 		name = $(event.target).html()
 		@dropFonts.setText(name)
-		@textStyle.font = name
-		@textStyle.applyChar()
+		@writer.toolbarHelper.fontClicked name
 
 	###
-	Event handler for when a font size is clicked.
+	Event handler for when a font size is clicked. This uses {Poe.ToolBarHelper}
 	@param event [MouseClickEvent] the event that triggered the callback
 	@private
 	###
 	handleFontSizeClick: (event) =>
 		name = $(event.target).html()
 		@dropFontSize.setText name
-		@textStyle.fontSize = parseInt(name.replace('px', ''))
-		@textStyle.applyChar()
+		@writer.toolbarHelper.fontSizeClicked name
 
 	###
 	Called when the line style changes of the {Poe.TextCursor}
@@ -311,46 +278,21 @@ class Poe.ToolBar
 			when Poe.ParagraphStyle.Align.Justify
 				@btnAlignJustify.active true
 
-	btnAlignLeftClicked: =>
-		@paragraphStyle.align = Poe.ParagraphStyle.Align.Left
-		@paragraphStyle.apply()
-
-	btnAlignCenterClicked: =>
-		@paragraphStyle.align = Poe.ParagraphStyle.Align.Center
-		@paragraphStyle.apply()
-
-	btnAlignRightClicked: =>
-		@paragraphStyle.align = Poe.ParagraphStyle.Align.Right
-		@paragraphStyle.apply()
-
-	btnAlignJustifyClicked: =>
-		@paragraphStyle.align = Poe.ParagraphStyle.Align.Justify
-		@paragraphStyle.apply()
-
 	handleColorClicked: (event) =>
 		event.stopPropagation()
 		target = $(event.target)
 		color = target.css 'background-color'
 
 		@dropColor.button.css 'background-color', color
-		@textStyle.color = color
-		@textStyle.applyChar()
+		@writer.toolbarHelper.colorClicked color
+		# HACK: This fixes fonts popping up after a color is clicked
 		@element.click()
 
 	btnListBulletClicked: =>
-		@createList Poe.List.ListType.Bullets
+		@writer.toolbarHelper.createList(Poe.List.ListType.Bullets)
 
 	btnListNumberClicked: =>
-		@createList Poe.List.ListType.Numbers
-
-	createList: (type) ->
-		list = new Poe.List()
-		list.setListType type
-
-		paragraph = @textCursor.currentParagraph()
-		list.insertAfter @textCursor.currentParagraph()
-		@textCursor.moveInside list.child(0).child(0)
-		@textStyle.applyChar()
+		@writer.toolbarHelper.createList(Poe.List.ListType.Numbers)
 
 	handlePDF: (event) =>
 		@writer.document.pdf.generate()
